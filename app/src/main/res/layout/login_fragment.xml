@@ -3,11 +3,4 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".userauth.LoginFragment">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="asasasasa"
-        android:textSize="20sp" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    tools:context=".ui.userauth.LoginFragment" />

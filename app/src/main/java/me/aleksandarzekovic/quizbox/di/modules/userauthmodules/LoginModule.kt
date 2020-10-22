@@ -6,8 +6,8 @@ import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import dagger.multibindings.IntoMap
 import me.aleksandarzekovic.quizbox.di.daggerawareviewmodelfactory.ViewModelKey
-import me.aleksandarzekovic.quizbox.userauth.LoginFragment
-import me.aleksandarzekovic.quizbox.userauth.LoginViewModel
+import me.aleksandarzekovic.quizbox.ui.userauth.LoginFragment
+import me.aleksandarzekovic.quizbox.ui.userauth.LoginViewModel
 
 @Module
 internal abstract class LoginModule {

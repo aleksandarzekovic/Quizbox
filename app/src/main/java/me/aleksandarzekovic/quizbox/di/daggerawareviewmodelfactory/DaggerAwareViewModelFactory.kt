@@ -19,7 +19,7 @@ class DaggerAwareViewModelFactory @Inject constructor(private val creators: @Jvm
         }
 
         if (creator == null) {
-            throw IllegalArgumentException("unknown model class " + modelClass)
+            throw IllegalArgumentException("unknown model class $modelClass")
         }
         try {
             @Suppress("UNCHECKED_CAST")
