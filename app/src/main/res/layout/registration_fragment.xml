@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="registrationModel"
+            type="me.aleksandarzekovic.quizbox.data.models.userauth.registration.RegistrationModel" />
+
+        <variable
+            name="registrationViewModel"
+            type="me.aleksandarzekovic.quizbox.ui.userauth.registration.RegistrationViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/primary_dark"
+        tools:context=".ui.userauth.registration.RegistrationFragment">
+
+        <ImageView
+            android:id="@+id/image_logo_app"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_size_medium"
+            android:background="@color/white"
+            android:contentDescription="@string/app_name"
+            android:elevation="@dimen/margin_size_medium"
+            android:paddingLeft="@dimen/margin_size_medium"
+            android:paddingRight="@dimen/margin_size_medium"
+            android:src="@drawable/ic_launcher_background"
+            app:layout_constraintBottom_toTopOf="@id/text_header"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_size_medium"
+            android:layout_marginRight="@dimen/margin_size_medium"
+            android:layout_marginBottom="@dimen/margin_size_medium"
+            android:fontFamily="@font/ubuntu_r"
+            android:text="@string/registration"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_large"
+            app:layout_constraintBottom_toTopOf="@+id/input_registration_email"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_registration_email"
+            style="@style/TextInputLayoutAppearance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_size_medium"
+            android:layout_marginRight="@dimen/margin_size_medium"
+            android:layout_marginBottom="@dimen/margin_size_small"
+            app:layout_constraintBottom_toTopOf="@+id/input_registration_password"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/username_hint"
+                android:text="@={registrationModel.email}"
+                android:textColor="@color/primary_text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_registration_password"
+            style="@style/TextInputLayoutAppearance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_size_medium"
+            android:layout_marginRight="@dimen/margin_size_medium"
+            android:layout_marginBottom="@dimen/margin_size_small"
+            app:layout_constraintBottom_toTopOf="@id/input_registration_confirm_password"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/password_hint"
+                android:inputType="textPassword"
+                android:text="@={registrationModel.password}"
+                android:textColor="@color/primary_text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_registration_confirm_password"
+            style="@style/TextInputLayoutAppearance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_size_medium"
+            android:layout_marginRight="@dimen/margin_size_medium"
+            android:layout_marginBottom="@dimen/margin_size_small"
+            app:layout_constraintBottom_toTopOf="@id/button_registration"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/confirm_password"
+                android:inputType="textPassword"
+                android:text="@={registrationModel.confirm_password}"
+                android:textColor="@color/primary_text" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/button_registration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_size_medium"
+            android:layout_marginRight="@dimen/margin_size_medium"
+            android:layout_marginBottom="@dimen/margin_size_medium"
+            android:background="@color/white"
+            android:onClick="@{() -> registrationViewModel.registerUser(registrationModel.email, registrationModel.password, registrationModel.confirm_password)}"
+            android:text="@string/registration"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@id/text_registration_have_acc"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <TextView
+            android:id="@+id/text_registration_have_acc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_size_medium"
+            android:layout_marginRight="@dimen/margin_size_medium"
+            android:layout_marginBottom="@dimen/margin_size_medium"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/ubuntu_r"
+            android:text="@string/have_acc"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_small"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <TextView
+            android:id="@+id/text_successful_registration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_size_medium"
+            android:layout_marginTop="@dimen/margin_size_medium"
+            android:layout_marginRight="@dimen/margin_size_medium"
+            android:layout_marginBottom="@dimen/margin_size_medium"
+            android:fontFamily="@font/ubuntu_r"
+            android:text="@string/successful_registration"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_medium"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/text_menu_registration"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/image_logo_app" />
+
+        <TextView
+            android:id="@+id/text_menu_registration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_size_medium"
+            android:layout_marginTop="@dimen/margin_size_medium"
+            android:layout_marginRight="@dimen/margin_size_medium"
+            android:layout_marginBottom="@dimen/margin_size_small"
+            android:fontFamily="@font/ubuntu_r"
+            android:text="@string/go_to_menu"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_medium"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/button_to_menu"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_successful_registration" />
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/button_to_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_size_medium"
+            android:clickable="true"
+            android:contentDescription="@string/alt_photo"
+            android:focusable="true"
+            android:src="@drawable/ic_baseline_arrow_forward_ios_24"
+            android:visibility="gone"
+            app:backgroundTint="@color/primary"
+            app:elevation="3dp"
+            app:fabSize="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:rippleColor="@color/white"
+            app:useCompatPadding="true" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

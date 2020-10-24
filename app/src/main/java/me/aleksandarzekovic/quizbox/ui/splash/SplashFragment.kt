@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import dagger.android.support.DaggerFragment
@@ -36,11 +35,12 @@ class SplashFragment : DaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this, awareViewModelFactory).get(SplashViewModel::class.java)
-        viewModel.user.observe(viewLifecycleOwner, Observer {
+        viewModel.user.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
                     if (it.data != null) {
-                        Toast.makeText(context, "User je ulogovan", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Session user is active.", Toast.LENGTH_SHORT)
+                            .show()
                     } else {
                         Handler().postDelayed({
                             view?.findNavController()

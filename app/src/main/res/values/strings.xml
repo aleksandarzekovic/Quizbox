@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Quizbox</string>
+    <string name="login">Login</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="registration">Registration</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="have_acc">You have account? LogIn</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="email_hint">Email</string>
+    <string name="send_request">Send Request</string>
+    <string name="go_to_login">Go to Login</string>
+    <string name="alt_photo">Alt Photo</string>
+    <string name="successful_registration">Successful registration!</string>
+    <string name="go_to_menu">Go to menu.</string>
 </resources>
