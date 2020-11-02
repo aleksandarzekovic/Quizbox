@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="quizMenuListener"
+            type="me.aleksandarzekovic.quizbox.utils.recyclerview.EventListener" />
+
+        <variable
+            name="quizMenuViewModel"
+            type="me.aleksandarzekovic.quizbox.ui.quizmenu.QuizMenuViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.quizmenu.QuizMenuFragment">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/quiz_menu_toolbar"
+            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/primary_dark"
+            app:layout_constraintBottom_toTopOf="@+id/category_joke_nested_scroll_view"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textColor="@color/primary_light"
+                android:textSize="@dimen/text_size_medium" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/category_joke_nested_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="?attr/actionBarSize"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/quiz_menu_toolbar">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/quiz_menu_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/padding_size_medium"
+                android:paddingTop="@dimen/padding_size_medium"
+                android:paddingRight="@dimen/padding_size_medium"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:data="@{quizMenuViewModel.data}"
+                tools:itemList="@{@layout/item_quiz_type}"
+                tools:itemListener="@{quizMenuListener}" />
+
+
+        </androidx.core.widget.NestedScrollView>
+
+        <ProgressBar
+            android:id="@+id/quiz_menu_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/primary_dark"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

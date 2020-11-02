@@ -53,6 +53,11 @@ class RegistrationFragment : DaggerFragment() {
             view?.findNavController()?.navigate(R.id.action_registrationFragment_to_loginFragment)
         }
 
+        binding.buttonToMenu.setOnClickListener {
+            view?.findNavController()
+                ?.navigate(R.id.action_registrationFragment_to_quizMenuFragment)
+        }
+
         viewModel.result.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
@@ -65,8 +70,6 @@ class RegistrationFragment : DaggerFragment() {
                     binding.textSuccessfulRegistration.visibility = View.VISIBLE
                     binding.textMenuRegistration.visibility = View.VISIBLE
                     binding.buttonToMenu.visibility = View.VISIBLE
-//                    view?.findNavController()
-//                        ?.navigate(R.id.action_registrationFragment_to_finishRegistrationFragment)
                 }
 
                 is Resource.Failure -> {

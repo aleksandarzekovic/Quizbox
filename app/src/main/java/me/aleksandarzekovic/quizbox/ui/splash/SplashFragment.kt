@@ -39,8 +39,10 @@ class SplashFragment : DaggerFragment() {
             when (it) {
                 is Resource.Success -> {
                     if (it.data != null) {
-                        Toast.makeText(context, "Session user is active.", Toast.LENGTH_SHORT)
-                            .show()
+                        Handler().postDelayed({
+                            view?.findNavController()
+                                ?.navigate(R.id.action_splashFragment_to_quizMenuFragment)
+                        }, 2000)
                     } else {
                         Handler().postDelayed({
                             view?.findNavController()

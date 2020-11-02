@@ -7,11 +7,17 @@ import me.aleksandarzekovic.quizbox.di.QuizboxApplication
 import me.aleksandarzekovic.quizbox.di.daggerawareviewmodelfactory.ViewModelFactory
 import me.aleksandarzekovic.quizbox.di.modules.AppModule
 import me.aleksandarzekovic.quizbox.di.modules.firebasemodule.FirebaseModule
+import me.aleksandarzekovic.quizbox.di.modules.quizlistresults.QuizListResultsModule
+import me.aleksandarzekovic.quizbox.di.modules.quizmenumodule.QuizMenuModule
+import me.aleksandarzekovic.quizbox.di.modules.quizquestionsmodule.QuizQuestionsModule
+import me.aleksandarzekovic.quizbox.di.modules.quizresult.QuizResultModule
 import me.aleksandarzekovic.quizbox.di.modules.splashmodule.SplashModule
 import me.aleksandarzekovic.quizbox.di.modules.userauthmodules.login.LoginModule
 import me.aleksandarzekovic.quizbox.di.modules.userauthmodules.registration.RegistrationModule
 import me.aleksandarzekovic.quizbox.di.modules.userauthmodules.resetpassword.ResetPasswordModule
+import javax.inject.Singleton
 
+@Singleton
 @Component(
     modules = [AndroidSupportInjectionModule::class,
         AppModule::class,
@@ -20,7 +26,11 @@ import me.aleksandarzekovic.quizbox.di.modules.userauthmodules.resetpassword.Res
         FirebaseModule::class,
         SplashModule::class,
         RegistrationModule::class,
-        ResetPasswordModule::class]
+        ResetPasswordModule::class,
+        QuizMenuModule::class,
+        QuizQuestionsModule::class,
+        QuizResultModule::class,
+        QuizListResultsModule::class]
 )
 interface AppComponent : AndroidInjector<QuizboxApplication> {
 

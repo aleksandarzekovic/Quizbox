@@ -14,4 +14,10 @@
     <string name="alt_photo">Alt Photo</string>
     <string name="successful_registration">Successful registration!</string>
     <string name="go_to_menu">Go to menu.</string>
+    <string name="zero">0</string>
+    <string name="next">Next</string>
+    <string name="your_score">Your Score:</string>
+    <string name="your_best_scores">Your best scores:</string>
+    <string name="results">Results</string>
+    <string name="logout">Logout</string>
 </resources>
