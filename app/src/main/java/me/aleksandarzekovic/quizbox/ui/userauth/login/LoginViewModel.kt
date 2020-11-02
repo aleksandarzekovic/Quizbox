@@ -1,5 +1,6 @@
 package me.aleksandarzekovic.quizbox.ui.userauth.login
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,6 +20,7 @@ class LoginViewModel @Inject constructor(private val loginRepository: LoginRepos
     fun onClickLogIn(email: String, password: String) {
         viewModelScope.launch {
             withContext(Dispatchers.Main) {
+                Log.d("Taaaa", "upao")
                 try {
                     val result = loginRepository.logIn(email, password)
                     user.value = result

@@ -11,6 +11,7 @@ import me.aleksandarzekovic.quizbox.di.modules.quizlistresults.QuizListResultsMo
 import me.aleksandarzekovic.quizbox.di.modules.quizmenumodule.QuizMenuModule
 import me.aleksandarzekovic.quizbox.di.modules.quizquestionsmodule.QuizQuestionsModule
 import me.aleksandarzekovic.quizbox.di.modules.quizresult.QuizResultModule
+import me.aleksandarzekovic.quizbox.di.modules.roommodule.RoomModule
 import me.aleksandarzekovic.quizbox.di.modules.splashmodule.SplashModule
 import me.aleksandarzekovic.quizbox.di.modules.userauthmodules.login.LoginModule
 import me.aleksandarzekovic.quizbox.di.modules.userauthmodules.registration.RegistrationModule
@@ -30,7 +31,8 @@ import javax.inject.Singleton
         QuizMenuModule::class,
         QuizQuestionsModule::class,
         QuizResultModule::class,
-        QuizListResultsModule::class]
+        QuizListResultsModule::class,
+        RoomModule::class]
 )
 interface AppComponent : AndroidInjector<QuizboxApplication> {
 

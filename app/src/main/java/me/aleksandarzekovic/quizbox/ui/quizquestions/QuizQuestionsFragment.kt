@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import dagger.android.support.DaggerFragment
 import me.aleksandarzekovic.quizbox.R
-import me.aleksandarzekovic.quizbox.data.models.quizquestions.QuizQuestionsModel
+import me.aleksandarzekovic.quizbox.data.database.QuizQuestions
 import me.aleksandarzekovic.quizbox.data.models.quizquestions.UserAnswer
 import me.aleksandarzekovic.quizbox.databinding.QuizQuestionsFragmentBinding
 import me.aleksandarzekovic.quizbox.di.daggerawareviewmodelfactory.DaggerAwareViewModelFactory
@@ -30,7 +30,8 @@ class QuizQuestionsFragment : DaggerFragment() {
     private lateinit var quizQuestionsFragmentBinding: QuizQuestionsFragmentBinding
     private var sumCorrectAnswers = 0
     private var countDownTimer: CountDownTimer? = null
-    private var questionQuizModel: QuizQuestionsModel? = QuizQuestionsModel()
+    private var questionQuizModel: QuizQuestions? =
+        QuizQuestions("", "", "", "", "", "", "", 1, true)
 
     @Inject
     lateinit var netManager: NetManager
@@ -73,7 +74,7 @@ class QuizQuestionsFragment : DaggerFragment() {
                             (10 - it.data.size).toString() + " / 10"
                         countDownTimer?.cancel()
                         resetButtons()
-                        startTimer(it.data[0]?.timer)
+                        startTimer(it.data[0].timer)
                     } else {
                         netManager.isConnectedToInternet?.let {
                             if (it) {

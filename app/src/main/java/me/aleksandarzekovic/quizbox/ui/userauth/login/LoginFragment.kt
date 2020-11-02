@@ -11,6 +11,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import dagger.android.support.DaggerFragment
 import me.aleksandarzekovic.quizbox.R
+import me.aleksandarzekovic.quizbox.data.models.userauth.login.LoginModel
 import me.aleksandarzekovic.quizbox.databinding.LoginFragmentBinding
 import me.aleksandarzekovic.quizbox.di.daggerawareviewmodelfactory.DaggerAwareViewModelFactory
 import me.aleksandarzekovic.quizbox.utils.Resource
@@ -46,7 +47,7 @@ class LoginFragment : DaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this, awareViewModelFactory).get(LoginViewModel::class.java)
         binding.loginViewModel = viewModel
-        //binding.loginModel = LoginModel("", "")
+        binding.loginModel = LoginModel("", "")
 
         binding.forgotPassword.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_resetPasswordFragment)
@@ -60,8 +61,8 @@ class LoginFragment : DaggerFragment() {
             {
                 when (it) {
                     is Resource.Success -> {
-//                        Toast.makeText(this.context, "${it.data}", Toast.LENGTH_SHORT)
-//                            .show()
+                        Toast.makeText(this.context, "${it.data}", Toast.LENGTH_SHORT)
+                            .show()
                         view?.findNavController()
                             ?.navigate(R.id.action_loginFragment_to_quizMenuFragment)
                     }

@@ -3,6 +3,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="quizMenuListener"
             type="me.aleksandarzekovic.quizbox.utils.recyclerview.EventListener" />

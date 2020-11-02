@@ -1,12 +1,9 @@
 package me.aleksandarzekovic.quizbox.ui.quizquestions
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import me.aleksandarzekovic.quizbox.data.models.quizquestions.QuizQuestionsModel
+import me.aleksandarzekovic.quizbox.data.database.QuizQuestions
 import me.aleksandarzekovic.quizbox.data.models.quizquestions.UserAnswer
 import me.aleksandarzekovic.quizbox.data.repository.quizquestions.QuizQuestionsRepository
 import me.aleksandarzekovic.quizbox.utils.Resource
@@ -16,28 +13,34 @@ class QuizQuestionsViewModel @Inject constructor(private val quizQuestionsReposi
     ViewModel() {
 
     var answer = MutableLiveData<List<UserAnswer>>()
-    var questions = MutableLiveData<Resource<List<QuizQuestionsModel?>>>()
+    //var questions = MutableLiveData<Resource<List<QuizQuestionsModel?>>>()
+
+    private val _questions = MutableLiveData<Resource<List<QuizQuestions>>>()
+
+    val questions: LiveData<Resource<List<QuizQuestions>>>
+        get() = _questions
 
     fun fetchData(quiz_id: String) {
-        viewModelScope.launch {
-            withContext(Dispatchers.Main) {
-                try {
-                    val result = quizQuestionsRepository.getQuizQuestions(quiz_id)
-                    questions.value = result
-                } catch (e: Exception) {
-                    questions.value = Resource.Failure(Throwable(e.message))
-                }
-
-            }
-        }
+        _questions.value = quizQuestionsRepository.getQuizQuewstion(quiz_id).value
+//        viewModelScope.launch {
+//            withContext(Dispatchers.Main) {
+//                try {
+//                    val result = quizQuestionsRepository.getQuizQuestions(quiz_id)
+//                    questions.value = result
+//                } catch (e: Exception) {
+//                    questions.value = Resource.Failure(Throwable(e.message))
+//                }
+//
+//            }
+//        }
     }
 
     fun onClickNext() {
-        if (questions.value != null) {
-            when (questions.value) {
+        if (_questions.value != null) {
+            when (_questions.value) {
                 is Resource.Success -> {
-                    questions.value = Resource.Success(
-                        (questions.value as Resource.Success<List<QuizQuestionsModel?>>).data.drop(
+                    _questions.value = Resource.Success(
+                        (_questions.value as Resource.Success<List<QuizQuestions>>).data.drop(
                             1
                         )
                     )
@@ -46,7 +49,7 @@ class QuizQuestionsViewModel @Inject constructor(private val quizQuestionsReposi
         }
     }
 
-    fun onClickAnswerOption(userAnswer: UserAnswer, question: QuizQuestionsModel) {
+    fun onClickAnswerOption(userAnswer: UserAnswer, question: QuizQuestions) {
 
         var correct: UserAnswer = UserAnswer.NO_CHECKED
         when (question.answer) {
