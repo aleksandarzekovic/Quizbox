@@ -1,6 +1,6 @@
 package me.aleksandarzekovic.quizbox.data.repository.quizquestions
 
-import android.util.Log
+import androidx.lifecycle.LiveData
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import me.aleksandarzekovic.quizbox.data.database.QuizQuestions
@@ -9,6 +9,8 @@ import me.aleksandarzekovic.quizbox.data.models.quizquestions.QuizQuestionsModel
 import me.aleksandarzekovic.quizbox.utils.NetManager
 import me.aleksandarzekovic.quizbox.utils.Resource
 import me.aleksandarzekovic.quizbox.utils.service.performGetOperation
+import me.aleksandarzekovic.quizbox.utils.service.toQuizQuestions
+import timber.log.Timber
 import javax.inject.Inject
 
 class QuizQuestionsRepository @Inject constructor(
@@ -16,16 +18,22 @@ class QuizQuestionsRepository @Inject constructor(
     private val localDataSource: QuizQuestionsDao,
     var netManager: NetManager
 ) {
-    private val tenQuestionsQuiz = ArrayList<QuizQuestionsModel?>()
 
-    fun getQuizQuewstion(quizId: String) = performGetOperation(
-        databaseQuery = { localDataSource.getQuizQuestions() },
-        networkCall = { getQuizQuestions(quizId) },
-        saveCallResult = { localDataSource.insertAll(it) }
-    )
+    fun getQuizQuestion(quizId: String): LiveData<Resource<List<QuizQuestions>>> {
+        Timber.i("performGetOperation call")
+        return performGetOperation(
+            databaseQuery = { localDataSource.getQuizQuestions() },
+            networkCall = { getQuizQuestions(quizId) },
+            saveCallResult = {
+                val listQuizQuestions: List<QuizQuestions> =
+                    it.map { item -> item.toQuizQuestions() }
+                localDataSource.insertAll(listQuizQuestions)
+            }
+        )
+    }
 
-    suspend fun getQuizQuestions(quizId: String): Resource<List<QuizQuestions>> {
-        Log.d("Quiz_ID", quizId)
+    suspend fun getQuizQuestions(quizId: String): Resource<List<QuizQuestionsModel>> {
+        Timber.i("firestore call")
         netManager.isConnectedToInternet?.let {
             if (it) {
                 val list =
@@ -33,8 +41,9 @@ class QuizQuestionsRepository @Inject constructor(
                         .collection("Questions").get()
                         .await()
 
-                val questions: List<QuizQuestions> = list.toObjects(QuizQuestions::class.java)
-                Log.d("Tagg", questions.toString())
+                val questions: List<QuizQuestionsModel> =
+                    list.toObjects(QuizQuestionsModel::class.java)
+
                 return Resource.Success(questions)
             }
             return Resource.Failure(Throwable("Not connected to internet."))
@@ -42,22 +51,5 @@ class QuizQuestionsRepository @Inject constructor(
         return Resource.Failure(Throwable("Error."))
 
 
-    }
-
-    private fun pickQuestions(listQuestions: MutableList<QuizQuestionsModel>?): List<QuizQuestionsModel?> {
-        tenQuestionsQuiz.clear()
-        val filterListQuestions = listQuestions!!.filter { p -> p.visibility == true }
-        val listQuizModels = filterListQuestions.size
-
-        if (listQuizModels > 9) {
-            (1..listQuizModels).shuffled().take(10).forEach {
-                tenQuestionsQuiz.add(filterListQuestions[it - 1])
-            }
-        } else {
-            (1..listQuizModels).shuffled().take(listQuizModels).forEach {
-                tenQuestionsQuiz.add(filterListQuestions[it - 1])
-            }
-        }
-        return tenQuestionsQuiz.toMutableList()
     }
 }

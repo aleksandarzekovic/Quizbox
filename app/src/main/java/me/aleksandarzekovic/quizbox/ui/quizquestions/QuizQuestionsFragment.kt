@@ -2,7 +2,6 @@ package me.aleksandarzekovic.quizbox.ui.quizquestions
 
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +17,7 @@ import me.aleksandarzekovic.quizbox.databinding.QuizQuestionsFragmentBinding
 import me.aleksandarzekovic.quizbox.di.daggerawareviewmodelfactory.DaggerAwareViewModelFactory
 import me.aleksandarzekovic.quizbox.utils.NetManager
 import me.aleksandarzekovic.quizbox.utils.Resource
+import timber.log.Timber
 import javax.inject.Inject
 
 class QuizQuestionsFragment : DaggerFragment() {
@@ -29,8 +29,10 @@ class QuizQuestionsFragment : DaggerFragment() {
     private lateinit var viewModel: QuizQuestionsViewModel
     private lateinit var quizQuestionsFragmentBinding: QuizQuestionsFragmentBinding
     private var sumCorrectAnswers = 0
+    private var totalAnswer = 0
     private var countDownTimer: CountDownTimer? = null
-    private var questionQuizModel: QuizQuestions? =
+    private var questionsIndex: Int = 0
+    private var questionQuizModel: QuizQuestions =
         QuizQuestions("", "", "", "", "", "", "", 1, true)
 
     @Inject
@@ -57,58 +59,78 @@ class QuizQuestionsFragment : DaggerFragment() {
         val quizId = arguments?.get("quizId").toString()
         val quizName = arguments?.get("quiz_name").toString()
 
-        Log.d("QuizQuestion", "$quizId plus $quizName")
         quizQuestionsFragmentBinding.quizQuestionsViewModel = viewModel
+
         viewModel.fetchData(quizId)
-        Log.d("BackStack", findNavController().graph.toString())
-        viewModel.questions.observe(viewLifecycleOwner, {
-            when (it) {
 
-                is Resource.Success -> {
-                    Log.d("QuizQuestion", it.data.toString())
-                    if (it.data.isNotEmpty()) {
-                        questionQuizModel = it.data[0]
-                        disableOrEnableOptions("ENABLE")
-                        quizQuestionsFragmentBinding.question = it.data[0]
-                        quizQuestionsFragmentBinding.numOfQuestion =
-                            (10 - it.data.size).toString() + " / 10"
-                        countDownTimer?.cancel()
-                        resetButtons()
-                        startTimer(it.data[0].timer)
+        viewModel.questionfinished.observe(viewLifecycleOwner, {
+            Timber.i("questionfinished observe")
+            if (it.isEmpty()) {
+                netManager.isConnectedToInternet?.let { net ->
+                    if (net) {
+                        findNavController().navigate(
+                            QuizQuestionsFragmentDirections.actionQuizQuestionsFragmentToQuizResultFragment(
+                                sumCorrectAnswers,
+                                totalAnswer,
+                                quizName
+                            )
+                        )
                     } else {
-                        netManager.isConnectedToInternet?.let {
-                            if (it) {
-                                Log.d("QuizQuestion", "succ")
-                                findNavController().navigate(
-                                    QuizQuestionsFragmentDirections.actionQuizQuestionsFragmentToQuizResultFragment(
-                                        sumCorrectAnswers,
-                                        10,
-                                        quizName
-                                    )
-                                )
-                            } else {
-                                Toast.makeText(
-                                    this.context,
-                                    "Not connected to internet.",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-
+                        Toast.makeText(
+                            this.context,
+                            "Not connected to internet.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
-
-                is Resource.Failure -> {
-                    Toast.makeText(this.context, "${it.throwable.message}", Toast.LENGTH_SHORT)
-                        .show()
-                }
+            } else {
+                setView(quizName, it)
             }
 
+        })
+
+        viewModel.questions.observe(viewLifecycleOwner, {
+            Timber.i("questions observe")
+            if (it != null) {
+                when (it) {
+                    is Resource.Success -> {
+                        Timber.i("questions Resource.Success observe")
+                        totalAnswer = it.data.size
+                        Timber.i("questions ${totalAnswer} observe")
+                        viewModel.dataUpdate(it.data)
+                    }
+
+                    is Resource.Failure -> {
+                        Timber.i("questions Resource.Error observe")
+                        Toast.makeText(this.context, "${it.throwable.message}", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    is Resource.Loading -> {
+                        Timber.i("questions Resource.Loading observe")
+                        Toast.makeText(this.context, "Loading", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+            }
         })
 
         viewModel.answer.observe(viewLifecycleOwner, {
             uiUserAnswer(it)
         })
+    }
+
+    private fun setView(quizName: String, listQuestions: List<QuizQuestions>) {
+        if (listQuestions.isNotEmpty()) {
+            questionQuizModel = listQuestions[questionsIndex]
+            disableOrEnableOptions("ENABLE")
+            quizQuestionsFragmentBinding.question = listQuestions[questionsIndex]
+            quizQuestionsFragmentBinding.numOfQuestion =
+                "${totalAnswer.minus(listQuestions.size).plus(1)} / $totalAnswer"
+            countDownTimer?.cancel()
+            resetButtons()
+            startTimer(listQuestions[questionsIndex].timer)
+        }
+
     }
 
     private fun resetButtons() {
@@ -271,7 +293,7 @@ class QuizQuestionsFragment : DaggerFragment() {
         countDownTimer = object : CountDownTimer(seconds!!.times(1000), 10) {
             override fun onFinish() {
                 disableOrEnableOptions("DISABLE")
-                viewModel.onClickAnswerOption(UserAnswer.NO_CHECKED, questionQuizModel!!)
+                viewModel.onClickAnswerOption(UserAnswer.NO_CHECKED, questionQuizModel)
             }
 
             override fun onTick(p0: Long) {

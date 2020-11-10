@@ -1,7 +1,6 @@
 package me.aleksandarzekovic.quizbox.ui.quizmenu
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +15,7 @@ import me.aleksandarzekovic.quizbox.databinding.QuizMenuFragmentBinding
 import me.aleksandarzekovic.quizbox.di.daggerawareviewmodelfactory.DaggerAwareViewModelFactory
 import me.aleksandarzekovic.quizbox.utils.NetManager
 import me.aleksandarzekovic.quizbox.utils.recyclerview.EventListener
+import timber.log.Timber
 import javax.inject.Inject
 
 class QuizMenuFragment : DaggerFragment(), EventListener<QuizTypeModel> {
@@ -56,13 +56,12 @@ class QuizMenuFragment : DaggerFragment(), EventListener<QuizTypeModel> {
         initToolbars()
         // We use a String here, but any type that can be put in a Bundle is supported
 
-
-//        val backStackEntryCount = NavHostFragment?.parentFragmentManager?.backStackEntryCount
-        Log.d("BackStack", findNavController().graph.toString())
+        Timber.i(findNavController().graph.toString())
     }
 
 
     private fun initToolbars() {
+        Timber.i("test1")
         setHasOptionsMenu(true)
         bindingQuizMenuFragmentBinding.quizMenuToolbar.setOnMenuItemClickListener { item ->
             when (item!!.itemId) {

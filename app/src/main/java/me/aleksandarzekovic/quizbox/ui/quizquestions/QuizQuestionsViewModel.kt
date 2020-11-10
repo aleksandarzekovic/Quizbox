@@ -3,50 +3,48 @@ package me.aleksandarzekovic.quizbox.ui.quizquestions
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.switchMap
 import me.aleksandarzekovic.quizbox.data.database.QuizQuestions
 import me.aleksandarzekovic.quizbox.data.models.quizquestions.UserAnswer
 import me.aleksandarzekovic.quizbox.data.repository.quizquestions.QuizQuestionsRepository
 import me.aleksandarzekovic.quizbox.utils.Resource
+import timber.log.Timber
 import javax.inject.Inject
 
 class QuizQuestionsViewModel @Inject constructor(private val quizQuestionsRepository: QuizQuestionsRepository) :
     ViewModel() {
 
+    private val _quizId = MutableLiveData<String>()
     var answer = MutableLiveData<List<UserAnswer>>()
-    //var questions = MutableLiveData<Resource<List<QuizQuestionsModel?>>>()
 
-    private val _questions = MutableLiveData<Resource<List<QuizQuestions>>>()
+    var questionfinished = MutableLiveData<List<QuizQuestions>>()
 
-    val questions: LiveData<Resource<List<QuizQuestions>>>
-        get() = _questions
-
-    fun fetchData(quiz_id: String) {
-        _questions.value = quizQuestionsRepository.getQuizQuewstion(quiz_id).value
-//        viewModelScope.launch {
-//            withContext(Dispatchers.Main) {
-//                try {
-//                    val result = quizQuestionsRepository.getQuizQuestions(quiz_id)
-//                    questions.value = result
-//                } catch (e: Exception) {
-//                    questions.value = Resource.Failure(Throwable(e.message))
-//                }
-//
-//            }
-//        }
-    }
-
-    fun onClickNext() {
-        if (_questions.value != null) {
-            when (_questions.value) {
-                is Resource.Success -> {
-                    _questions.value = Resource.Success(
-                        (_questions.value as Resource.Success<List<QuizQuestions>>).data.drop(
-                            1
-                        )
-                    )
-                }
+    private val _questions: LiveData<Resource<List<QuizQuestions>>>
+        get() {
+            Timber.i("quizQuestionRepo call")
+            return _quizId.switchMap {
+                quizQuestionsRepository.getQuizQuestion(it)
             }
         }
+
+    val questions = _questions
+
+
+    fun fetchData(quiz_id: String) {
+        _quizId.value = quiz_id
+    }
+
+    fun dataUpdate(list: List<QuizQuestions>) {
+        Timber.i("dataUpdate call")
+        questionfinished.value = list
+    }
+
+
+    fun onClickNext(model: QuizQuestions) {
+        if (questionfinished.value != null) {
+            questionfinished.value = (questionfinished.value as List<QuizQuestions>).drop(1)
+        }
+        Timber.i(questionfinished.value.toString())
     }
 
     fun onClickAnswerOption(userAnswer: UserAnswer, question: QuizQuestions) {
