@@ -3,8 +3,8 @@ package me.aleksandarzekovic.quizbox.data.repository.quizquestions
 import androidx.lifecycle.LiveData
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
-import me.aleksandarzekovic.quizbox.data.database.QuizQuestions
-import me.aleksandarzekovic.quizbox.data.database.QuizQuestionsDao
+import me.aleksandarzekovic.quizbox.data.database.quizquestion.QuizQuestionsDB
+import me.aleksandarzekovic.quizbox.data.database.quizquestion.QuizQuestionsDao
 import me.aleksandarzekovic.quizbox.data.models.quizquestions.QuizQuestionsModel
 import me.aleksandarzekovic.quizbox.utils.NetManager
 import me.aleksandarzekovic.quizbox.utils.Resource
@@ -19,15 +19,15 @@ class QuizQuestionsRepository @Inject constructor(
     var netManager: NetManager
 ) {
 
-    fun getQuizQuestion(quizId: String): LiveData<Resource<List<QuizQuestions>>> {
+    fun getQuizQuestion(quizId: String): LiveData<Resource<List<QuizQuestionsDB>>> {
         Timber.i("performGetOperation call")
         return performGetOperation(
             databaseQuery = { localDataSource.getQuizQuestions() },
             networkCall = { getQuizQuestions(quizId) },
             saveCallResult = {
-                val listQuizQuestions: List<QuizQuestions> =
+                val listQuizQuestionDBS: List<QuizQuestionsDB> =
                     it.map { item -> item.toQuizQuestions() }
-                localDataSource.insertAll(listQuizQuestions)
+                localDataSource.insertAll(listQuizQuestionDBS)
             }
         )
     }

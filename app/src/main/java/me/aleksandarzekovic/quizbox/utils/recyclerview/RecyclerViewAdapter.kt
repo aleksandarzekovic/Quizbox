@@ -10,7 +10,7 @@ import me.aleksandarzekovic.quizbox.BR
 
 class RecyclerViewAdapter<T>(
     @LayoutRes val resource: Int,
-    var data: ArrayList<T>,
+    var data: List<T>,
     val listener: Any? = null
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -42,7 +42,7 @@ class RecyclerViewAdapter<T>(
         }
     }
 
-    fun updateData(data: ArrayList<T>) {
+    fun updateData(data: List<T>) {
         this.data = data
         notifyDataSetChanged()
     }

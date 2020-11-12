@@ -9,7 +9,7 @@
 
         <variable
             name="question"
-            type="me.aleksandarzekovic.quizbox.data.database.QuizQuestions" />
+            type="me.aleksandarzekovic.quizbox.data.database.quizquestion.QuizQuestionsDB" />
 
         <variable
             name="numOfQuestion"

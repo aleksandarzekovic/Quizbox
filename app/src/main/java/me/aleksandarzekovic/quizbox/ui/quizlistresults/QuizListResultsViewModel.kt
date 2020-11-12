@@ -15,7 +15,7 @@ import javax.inject.Inject
 class QuizListResultsViewModel @Inject constructor(val quizListResultsRepository: QuizListResultsRepository) :
     ViewModel() {
 
-    var listResults = MutableLiveData<ArrayList<QuizListResultsModel?>?>()
+    var listResults = MutableLiveData<List<QuizListResultsModel?>?>()
     var test = MutableLiveData<Boolean>()
     fun res() {
         viewModelScope.launch {

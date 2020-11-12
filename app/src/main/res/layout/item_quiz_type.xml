@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bind="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
         <variable
             name="model"
-            type="me.aleksandarzekovic.quizbox.data.models.quizmenu.QuizTypeModel" />
+            type="me.aleksandarzekovic.quizbox.data.database.quizmenu.QuizTypeDB" />
 
         <variable
             name="listener"
@@ -29,34 +28,25 @@
         android:onClick="@{() -> listener.onItemClick(model)}"
         android:padding="4dp">
 
-        <ImageView
-            android:id="@+id/item_type_quiz_image"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:contentDescription="@string/app_name"
-            android:scaleType="center"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            bind:image="@{model.image}" />
 
         <TextView
             android:id="@+id/item_type_quiz_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_size_small"
             android:text="@{model.name}"
-            android:textColor="@color/white"
+            android:textAlignment="center"
+            android:textColor="@color/icons"
             android:textSize="@dimen/text_size_medium"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/item_type_quiz_image" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_size_small"
             android:text="@{model.desc}"
-            android:textColor="@color/white"
+            android:textColor="@color/icons"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/item_type_quiz_title" />
 

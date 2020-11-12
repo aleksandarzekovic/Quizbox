@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
-import me.aleksandarzekovic.quizbox.data.database.QuizQuestions
+import me.aleksandarzekovic.quizbox.data.database.quizquestion.QuizQuestionsDB
 import me.aleksandarzekovic.quizbox.data.models.quizquestions.UserAnswer
 import me.aleksandarzekovic.quizbox.data.repository.quizquestions.QuizQuestionsRepository
 import me.aleksandarzekovic.quizbox.utils.Resource
@@ -17,9 +17,9 @@ class QuizQuestionsViewModel @Inject constructor(private val quizQuestionsReposi
     private val _quizId = MutableLiveData<String>()
     var answer = MutableLiveData<List<UserAnswer>>()
 
-    var questionfinished = MutableLiveData<List<QuizQuestions>>()
+    var questionfinished = MutableLiveData<List<QuizQuestionsDB>>()
 
-    private val _questions: LiveData<Resource<List<QuizQuestions>>>
+    private val _questionsDB: LiveData<Resource<List<QuizQuestionsDB>>>
         get() {
             Timber.i("quizQuestionRepo call")
             return _quizId.switchMap {
@@ -27,27 +27,27 @@ class QuizQuestionsViewModel @Inject constructor(private val quizQuestionsReposi
             }
         }
 
-    val questions = _questions
+    val questions = _questionsDB
 
 
     fun fetchData(quiz_id: String) {
         _quizId.value = quiz_id
     }
 
-    fun dataUpdate(list: List<QuizQuestions>) {
+    fun dataUpdate(list: List<QuizQuestionsDB>) {
         Timber.i("dataUpdate call")
         questionfinished.value = list
     }
 
 
-    fun onClickNext(model: QuizQuestions) {
+    fun onClickNext(model: QuizQuestionsDB) {
         if (questionfinished.value != null) {
-            questionfinished.value = (questionfinished.value as List<QuizQuestions>).drop(1)
+            questionfinished.value = (questionfinished.value as List<QuizQuestionsDB>).drop(1)
         }
         Timber.i(questionfinished.value.toString())
     }
 
-    fun onClickAnswerOption(userAnswer: UserAnswer, question: QuizQuestions) {
+    fun onClickAnswerOption(userAnswer: UserAnswer, question: QuizQuestionsDB) {
 
         var correct: UserAnswer = UserAnswer.NO_CHECKED
         when (question.answer) {

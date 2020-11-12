@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
 import me.aleksandarzekovic.quizbox.R
 import me.aleksandarzekovic.quizbox.databinding.QuizResultFragmentBinding
@@ -62,11 +63,16 @@ class QuizResultFragment : DaggerFragment() {
                 if (it) {
                     //p0?.findNavController()?.navigate(R.id.action_resultQuizFragment_to_typeQuizFragment)
                 } else {
-                    Toast.makeText(
-                        this.context,
+                    Snackbar.make(
+                        this.requireView(),
                         "Not connected to internet.",
-                        Toast.LENGTH_SHORT
+                        Snackbar.LENGTH_SHORT
                     ).show()
+//                    Toast.makeText(
+//                        this.context,
+//                        "Not connected to internet.",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
                 }
             }
         }

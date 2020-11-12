@@ -1,11 +1,11 @@
-package me.aleksandarzekovic.quizbox.data.database
+package me.aleksandarzekovic.quizbox.data.database.quizquestion
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "questions")
-data class QuizQuestions(
+data class QuizQuestionsDB(
 
     @PrimaryKey
     @ColumnInfo(name = "questionId")

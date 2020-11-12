@@ -1,14 +1,15 @@
 package me.aleksandarzekovic.quizbox.utils.service
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import kotlinx.coroutines.Dispatchers
-import me.aleksandarzekovic.quizbox.data.database.QuizQuestions
+import me.aleksandarzekovic.quizbox.data.database.quizmenu.QuizTypeDB
+import me.aleksandarzekovic.quizbox.data.database.quizquestion.QuizQuestionsDB
+import me.aleksandarzekovic.quizbox.data.models.quizmenu.QuizTypeModel
 import me.aleksandarzekovic.quizbox.data.models.quizquestions.QuizQuestionsModel
 import me.aleksandarzekovic.quizbox.utils.Resource
-import timber.log.Timber
+import java.io.IOException
 
 fun <T, A> performGetOperation(
     databaseQuery: () -> LiveData<T>,
@@ -16,20 +17,24 @@ fun <T, A> performGetOperation(
     saveCallResult: suspend (A) -> Unit
 ): LiveData<Resource<T>> =
     liveData(Dispatchers.IO) {
-        emit(Resource.Loading<T>())
+        try {
+            emit(Resource.Loading<T>())
 
-        when (val responseStatus = networkCall.invoke()) {
-            is Resource.Success -> saveCallResult(responseStatus.data!!)
-            is Resource.Failure -> {
-                emit(Resource.Failure<T>(Throwable(responseStatus.throwable.message)))
-                //emitSource(source)
-                Timber.i("performGetOperation emit failure network")
+            when (val responseStatus = networkCall.invoke()) {
+                is Resource.Success -> saveCallResult(responseStatus.data!!)
+                is Resource.Failure -> {
+                    emit(Resource.Failure<T>(Throwable(responseStatus.throwable.message)))
+                    //emitSource(source)
+                }
+                else -> emit(Resource.Failure<T>(Throwable("Error.")))
             }
-            else -> emit(Resource.Failure<T>(Throwable("Error.")))
+
+            val source: LiveData<Resource<T>> = databaseQuery.invoke().map { Resource.Success(it) }
+            emitSource(source)
+        } catch (exception: IOException) {
+            emit(Resource.Failure<T>(Throwable(exception.message)))
         }
 
-        val source: LiveData<Resource<T>> = databaseQuery.invoke().map { Resource.Success(it) }
-        emitSource(source)
 
     }
 
@@ -48,10 +53,8 @@ fun <T> Resource<List<T>>.populateQuiz(n: Int): Resource<List<T>> = let { resour
 
 } as Resource<List<T>>
 
-fun <T, R> LiveData<T>.switchMapRem(func: (T) -> LiveData<R>) =
-    Transformations.switchMap(this, func)
 
-fun QuizQuestionsModel.toQuizQuestions() = QuizQuestions(
+fun QuizQuestionsModel.toQuizQuestions() = QuizQuestionsDB(
     questionId = "$questionId",
     question = "$question",
     answer = "$answer",
@@ -60,5 +63,12 @@ fun QuizQuestionsModel.toQuizQuestions() = QuizQuestions(
     option_c = "$option_c",
     option_d = "$option_d",
     timer = timer,
+    visibility = visibility
+)
+
+fun QuizTypeModel.toQuizType() = QuizTypeDB(
+    quizId = "$quiz_id",
+    name = "$name",
+    desc = "$desc",
     visibility = visibility
 )

@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import dagger.android.support.DaggerFragment
 import me.aleksandarzekovic.quizbox.R
-import me.aleksandarzekovic.quizbox.data.database.QuizQuestions
+import me.aleksandarzekovic.quizbox.data.database.quizquestion.QuizQuestionsDB
 import me.aleksandarzekovic.quizbox.data.models.quizquestions.UserAnswer
 import me.aleksandarzekovic.quizbox.databinding.QuizQuestionsFragmentBinding
 import me.aleksandarzekovic.quizbox.di.daggerawareviewmodelfactory.DaggerAwareViewModelFactory
@@ -32,8 +32,8 @@ class QuizQuestionsFragment : DaggerFragment() {
     private var totalAnswer = 0
     private var countDownTimer: CountDownTimer? = null
     private var questionsIndex: Int = 0
-    private var questionQuizModel: QuizQuestions =
-        QuizQuestions("", "", "", "", "", "", "", 1, true)
+    private var questionQuizModelDB: QuizQuestionsDB =
+        QuizQuestionsDB("", "", "", "", "", "", "", 1, true)
 
     @Inject
     lateinit var netManager: NetManager
@@ -119,9 +119,9 @@ class QuizQuestionsFragment : DaggerFragment() {
         })
     }
 
-    private fun setView(quizName: String, listQuestions: List<QuizQuestions>) {
+    private fun setView(quizName: String, listQuestions: List<QuizQuestionsDB>) {
         if (listQuestions.isNotEmpty()) {
-            questionQuizModel = listQuestions[questionsIndex]
+            questionQuizModelDB = listQuestions[questionsIndex]
             disableOrEnableOptions("ENABLE")
             quizQuestionsFragmentBinding.question = listQuestions[questionsIndex]
             quizQuestionsFragmentBinding.numOfQuestion =
@@ -293,7 +293,7 @@ class QuizQuestionsFragment : DaggerFragment() {
         countDownTimer = object : CountDownTimer(seconds!!.times(1000), 10) {
             override fun onFinish() {
                 disableOrEnableOptions("DISABLE")
-                viewModel.onClickAnswerOption(UserAnswer.NO_CHECKED, questionQuizModel)
+                viewModel.onClickAnswerOption(UserAnswer.NO_CHECKED, questionQuizModelDB)
             }
 
             override fun onTick(p0: Long) {

@@ -11,7 +11,7 @@ import me.aleksandarzekovic.quizbox.R
 @BindingAdapter(value = ["data", "itemList", "itemListener"], requireAll = false)
 fun <T> setAdapter(
     recyclerView: RecyclerView,
-    data: MutableLiveData<ArrayList<T>>,
+    data: MutableLiveData<List<T>>,
     @LayoutRes itemList: Int,
     itemListener: Any
 ) {
@@ -19,12 +19,12 @@ fun <T> setAdapter(
         recyclerView.adapter =
             RecyclerViewAdapter(
                 itemList,
-                data.value ?: ArrayList(),
+                data.value ?: listOf(),
                 itemListener
             )
     } else {
         if (recyclerView.adapter is RecyclerViewAdapter<*>) {
-            val items = data.value ?: ArrayList()
+            val items = data.value ?: listOf()
             (recyclerView.adapter as RecyclerViewAdapter<T>).updateData(items)
         }
     }

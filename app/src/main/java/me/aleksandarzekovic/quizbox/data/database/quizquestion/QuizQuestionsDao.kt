@@ -1,4 +1,4 @@
-package me.aleksandarzekovic.quizbox.data.database
+package me.aleksandarzekovic.quizbox.data.database.quizquestion
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
@@ -10,14 +10,14 @@ import androidx.room.Query
 interface QuizQuestionsDao {
 
     @Query("SELECT * FROM questions")
-    fun getQuizQuestions(): LiveData<List<QuizQuestions>>
+    fun getQuizQuestions(): LiveData<List<QuizQuestionsDB>>
 
     @Query("SELECT * FROM questions")
-    fun getQuizQuestions1(): List<QuizQuestions>
+    fun getQuizQuestions1(): List<QuizQuestionsDB>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(questions: List<QuizQuestions>)
+    suspend fun insertAll(questions: List<QuizQuestionsDB>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(question: QuizQuestions)
+    suspend fun insert(question: QuizQuestionsDB)
 }

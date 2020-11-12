@@ -8,17 +8,19 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
 import me.aleksandarzekovic.quizbox.R
-import me.aleksandarzekovic.quizbox.data.models.quizmenu.QuizTypeModel
+import me.aleksandarzekovic.quizbox.data.database.quizmenu.QuizTypeDB
 import me.aleksandarzekovic.quizbox.databinding.QuizMenuFragmentBinding
 import me.aleksandarzekovic.quizbox.di.daggerawareviewmodelfactory.DaggerAwareViewModelFactory
 import me.aleksandarzekovic.quizbox.utils.NetManager
+import me.aleksandarzekovic.quizbox.utils.Resource
 import me.aleksandarzekovic.quizbox.utils.recyclerview.EventListener
 import timber.log.Timber
 import javax.inject.Inject
 
-class QuizMenuFragment : DaggerFragment(), EventListener<QuizTypeModel> {
+class QuizMenuFragment : DaggerFragment(), EventListener<QuizTypeDB> {
 
     companion object {
         fun newInstance() = QuizMenuFragment()
@@ -54,7 +56,30 @@ class QuizMenuFragment : DaggerFragment(), EventListener<QuizTypeModel> {
         bindingQuizMenuFragmentBinding.quizMenuListener = this
         bindingQuizMenuFragmentBinding.quizMenuViewModel = viewModel
         initToolbars()
-        // We use a String here, but any type that can be put in a Bundle is supported
+
+        viewModel.quizTypes.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Loading -> {
+                    bindingQuizMenuFragmentBinding.quizMenuProgressBar.visibility = View.VISIBLE
+                }
+                is Resource.Success -> {
+                    Timber.i("QuizMenuFragment inside")
+                    if (it.data != null) {
+                        Timber.i("QuizMenuFragment inside isNonEmpty")
+                        bindingQuizMenuFragmentBinding.quizMenuProgressBar.visibility = View.GONE
+                        viewModel.fillData(it.data)
+                    }
+                }
+                is Resource.Failure -> {
+                    Snackbar.make(
+                        this.requireView(),
+                        "${it.throwable.message}",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        })
+
 
         Timber.i(findNavController().graph.toString())
     }
@@ -101,22 +126,22 @@ class QuizMenuFragment : DaggerFragment(), EventListener<QuizTypeModel> {
         bindingQuizMenuFragmentBinding.quizMenuToolbar.inflateMenu(R.menu.main_menu)
     }
 
-    override fun onItemClick(t: QuizTypeModel) {
+    override fun onItemClick(t: QuizTypeDB) {
         netManager.isConnectedToInternet?.let {
             if (it) {
                 findNavController()
                     .navigate(
                         QuizMenuFragmentDirections.actionQuizMenuFragmentToQuizQuestionsFragment(
-                            t.quiz_id.toString(),
+                            t.quizId,
                             t.name.toString()
                         )
                     )
 
             } else {
-                Toast.makeText(
-                    context,
+                Snackbar.make(
+                    this.requireView(),
                     "Not connected to internet.",
-                    Toast.LENGTH_SHORT
+                    Snackbar.LENGTH_SHORT
                 ).show()
             }
 

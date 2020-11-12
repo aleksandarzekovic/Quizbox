@@ -9,27 +9,18 @@ import javax.inject.Singleton
 @Module
 class RoomModule {
 
-//    @Provides
-//    @Singleton
-//    fun provideQuizboxADatabase(application: QuizboxApplication): QuizboxDatabase {
-//        return Room.databaseBuilder(application, QuizboxDatabase::class.java, "quizbox.db")
-//            .fallbackToDestructiveMigration()
-//            .build()
-//    }
-//
-//    @Singleton
-//    @Provides
-//    fun provideQuestionsDao(appDataBase: QuizboxDatabase): QuizQuestionsDao {
-//        return appDataBase.quizQuestionsDao()
-//    }
-//
-@Singleton
-@Provides
-fun provideDatabase(application: QuizboxApplication) = QuizboxDatabase.getDatabase(
-    application.applicationContext
-)
+    @Singleton
+    @Provides
+    fun provideDatabase(application: QuizboxApplication) = QuizboxDatabase.getDatabase(
+        application.applicationContext
+    )
 
     @Singleton
     @Provides
     fun provideQuestionsDao(db: QuizboxDatabase) = db.quizQuestionsDao()
+
+    @Singleton
+    @Provides
+    fun provideQuizTypeDao(db: QuizboxDatabase) = db.quizTypeDao()
+
 }
