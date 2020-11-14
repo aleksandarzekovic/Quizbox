@@ -10,7 +10,7 @@
 
         <variable
             name="listener"
-            type="me.aleksandarzekovic.quizbox.utils.recyclerview.EventListener" />
+            type="me.aleksandarzekovic.quizbox.ui.quizmenu.QuizMenuAdapter.QuizMenuClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

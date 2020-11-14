@@ -1,6 +1,5 @@
 package me.aleksandarzekovic.quizbox.data.database.quizmenu
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -10,8 +9,8 @@ import androidx.room.Query
 interface QuizTypeDBDao {
 
     @Query("SELECT * FROM quiz_type")
-    fun getQuizTypes(): LiveData<List<QuizTypeDB>>
+    suspend fun getQuizTypes(): List<QuizTypeDB>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(quizTypes: List<QuizTypeDB>)
 }

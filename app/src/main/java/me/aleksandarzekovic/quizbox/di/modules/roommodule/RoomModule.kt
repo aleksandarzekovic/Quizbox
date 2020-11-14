@@ -23,4 +23,8 @@ class RoomModule {
     @Provides
     fun provideQuizTypeDao(db: QuizboxDatabase) = db.quizTypeDao()
 
+    @Singleton
+    @Provides
+    fun provideQuizResultDao(db: QuizboxDatabase) = db.quizResultDao()
+
 }

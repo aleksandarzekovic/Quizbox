@@ -16,11 +16,10 @@ import me.aleksandarzekovic.quizbox.databinding.QuizMenuFragmentBinding
 import me.aleksandarzekovic.quizbox.di.daggerawareviewmodelfactory.DaggerAwareViewModelFactory
 import me.aleksandarzekovic.quizbox.utils.NetManager
 import me.aleksandarzekovic.quizbox.utils.Resource
-import me.aleksandarzekovic.quizbox.utils.recyclerview.EventListener
 import timber.log.Timber
 import javax.inject.Inject
 
-class QuizMenuFragment : DaggerFragment(), EventListener<QuizTypeDB> {
+class QuizMenuFragment : DaggerFragment(), QuizMenuAdapter.QuizMenuClickListener {
 
     companion object {
         fun newInstance() = QuizMenuFragment()
@@ -53,22 +52,26 @@ class QuizMenuFragment : DaggerFragment(), EventListener<QuizTypeDB> {
         super.onActivityCreated(savedInstanceState)
         viewModel =
             ViewModelProvider(this, awareViewModelFactory).get(QuizMenuViewModel::class.java)
-        bindingQuizMenuFragmentBinding.quizMenuListener = this
-        bindingQuizMenuFragmentBinding.quizMenuViewModel = viewModel
+        //bindingQuizMenuFragmentBinding.quizMenuListener = this
         initToolbars()
 
+        viewModel.fetch()
+
+        val a = QuizMenuAdapter(this)
+
+        bindingQuizMenuFragmentBinding.adapter = a
         viewModel.quizTypes.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Loading -> {
                     bindingQuizMenuFragmentBinding.quizMenuProgressBar.visibility = View.VISIBLE
                 }
                 is Resource.Success -> {
-                    Timber.i("QuizMenuFragment inside")
-                    if (it.data != null) {
-                        Timber.i("QuizMenuFragment inside isNonEmpty")
+                    Timber.i("Jedan")
+                    it.let {
                         bindingQuizMenuFragmentBinding.quizMenuProgressBar.visibility = View.GONE
-                        viewModel.fillData(it.data)
+                        a.submitList(it.data)
                     }
+                    //viewModel.fillData(it.data)
                 }
                 is Resource.Failure -> {
                     Snackbar.make(
@@ -126,14 +129,14 @@ class QuizMenuFragment : DaggerFragment(), EventListener<QuizTypeDB> {
         bindingQuizMenuFragmentBinding.quizMenuToolbar.inflateMenu(R.menu.main_menu)
     }
 
-    override fun onItemClick(t: QuizTypeDB) {
+    override fun onItemClick(f: QuizTypeDB) {
         netManager.isConnectedToInternet?.let {
             if (it) {
                 findNavController()
                     .navigate(
                         QuizMenuFragmentDirections.actionQuizMenuFragmentToQuizQuestionsFragment(
-                            t.quizId,
-                            t.name.toString()
+                            f.quizId,
+                            f.name.toString()
                         )
                     )
 
@@ -147,5 +150,9 @@ class QuizMenuFragment : DaggerFragment(), EventListener<QuizTypeDB> {
 
         }
     }
+
+//    override fun onItemClick(f: QuizTypeDB) {
+//
+//    }
 
 }

@@ -9,6 +9,7 @@ import me.aleksandarzekovic.quizbox.data.database.quizquestion.QuizQuestionsDB
 import me.aleksandarzekovic.quizbox.data.models.quizmenu.QuizTypeModel
 import me.aleksandarzekovic.quizbox.data.models.quizquestions.QuizQuestionsModel
 import me.aleksandarzekovic.quizbox.utils.Resource
+import timber.log.Timber
 import java.io.IOException
 
 fun <T, A> performGetOperation(
@@ -24,7 +25,6 @@ fun <T, A> performGetOperation(
                 is Resource.Success -> saveCallResult(responseStatus.data!!)
                 is Resource.Failure -> {
                     emit(Resource.Failure<T>(Throwable(responseStatus.throwable.message)))
-                    //emitSource(source)
                 }
                 else -> emit(Resource.Failure<T>(Throwable("Error.")))
             }
@@ -37,6 +37,7 @@ fun <T, A> performGetOperation(
 
 
     }
+
 
 fun <T> Resource<List<T>>.populateQuiz(n: Int): Resource<List<T>> = let { resource ->
     when (resource) {
@@ -72,3 +73,5 @@ fun QuizTypeModel.toQuizType() = QuizTypeDB(
     desc = "$desc",
     visibility = visibility
 )
+
+fun logCoroutineInfo(msg: String) = Timber.i("Running on: [${Thread.currentThread().name}] | $msg")

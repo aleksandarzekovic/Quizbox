@@ -50,8 +50,8 @@ class QuizResultFragment : DaggerFragment() {
             ViewModelProvider(this, awareViewModelFactory).get(QuizResultViewModel::class.java)
 
         viewModel.saveResults(
-            arguments?.get("correct_answers").toString(),
-            arguments?.get("total_answers").toString(),
+            arguments?.get("correct_answers").toString().toInt(),
+            arguments?.get("total_answers").toString().toInt(),
             arguments?.get("quiz_name").toString()
         )
 

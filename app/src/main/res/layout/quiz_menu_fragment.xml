@@ -6,16 +6,12 @@
         <import type="android.view.View" />
 
         <variable
-            name="data"
-            type="java.util.List" />
+            name="adapter"
+            type="me.aleksandarzekovic.quizbox.ui.quizmenu.QuizMenuAdapter" />
 
         <variable
             name="quizMenuListener"
             type="me.aleksandarzekovic.quizbox.utils.recyclerview.EventListener" />
-
-        <variable
-            name="quizMenuViewModel"
-            type="me.aleksandarzekovic.quizbox.ui.quizmenu.QuizMenuViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -63,10 +59,8 @@
                 android:paddingLeft="@dimen/padding_size_medium"
                 android:paddingTop="@dimen/padding_size_medium"
                 android:paddingRight="@dimen/padding_size_medium"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:data="@{quizMenuViewModel.data}"
-                tools:itemList="@{@layout/item_quiz_type}"
-                tools:itemListener="@{quizMenuListener}" />
+                app:adapter="@{adapter}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 
         </androidx.core.widget.NestedScrollView>
