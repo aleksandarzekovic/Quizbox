@@ -6,12 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.findNavController
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
 import me.aleksandarzekovic.quizbox.R
 import me.aleksandarzekovic.quizbox.databinding.QuizListResultsFragmentBinding
 import me.aleksandarzekovic.quizbox.di.daggerawareviewmodelfactory.DaggerAwareViewModelFactory
 import me.aleksandarzekovic.quizbox.utils.NetManager
+import me.aleksandarzekovic.quizbox.utils.Resource
 import javax.inject.Inject
 
 class QuizListResultsFragment : DaggerFragment() {
@@ -47,9 +49,27 @@ class QuizListResultsFragment : DaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel =
             ViewModelProvider(this, awareViewModelFactory).get(QuizListResultsViewModel::class.java)
-        viewModel.res()
+
+        viewModel._listResults.value = listOf()
+        val a = QuizListResultsAdapter()
+        quizListResultsFragmentBinding.listResultsRecyclerView.adapter = a
+
+        viewModel.listResults.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Loading -> {
+
+                }
+                is Resource.Success -> {
+                    a.submitList(it.data)
+                }
+                is Resource.Failure -> {
+                    Snackbar.make(requireView(), "${it.throwable.message}", Snackbar.LENGTH_SHORT)
+                        .show()
+                }
+            }
+        })
         quizListResultsFragmentBinding.backPressed.setOnClickListener {
-            findNavController().navigate(
+            view?.findNavController()?.navigate(
                 R.id.action_quizListResultsFragment_to_quizMenuFragment
             )
         }

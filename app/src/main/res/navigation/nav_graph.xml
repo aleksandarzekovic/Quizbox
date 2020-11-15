@@ -83,6 +83,11 @@
         <action
             android:id="@+id/action_quizListResultsFragment_to_quizMenuFragment"
             app:destination="@id/quizMenuFragment" />
+        <action
+            android:id="@+id/action_quizListResultsFragment_to_quizMenuFragment2"
+            app:destination="@id/quizMenuFragment"
+            app:popUpTo="@id/quizMenuFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/quizQuestionsFragment"
@@ -123,5 +128,10 @@
         <argument
             android:name="quiz_name"
             app:argType="string" />
+        <action
+            android:id="@+id/action_quizResultFragment_to_quizMenuFragment"
+            app:destination="@id/quizMenuFragment"
+            app:popUpTo="@id/quizMenuFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

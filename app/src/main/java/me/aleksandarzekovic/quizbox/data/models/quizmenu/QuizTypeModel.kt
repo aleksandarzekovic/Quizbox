@@ -10,11 +10,3 @@ data class QuizTypeModel(
     var desc: String? = null,
     var visibility: Boolean? = null
 )
-
-//@BindingAdapter("avatar")
-//fun loadImage(imageView: ImageView, imageURL: String) {
-//    Glide.with(imageView.context)
-//        .load(imageURL)
-//        .placeholder(R.drawable.none_image)
-//        .into(imageView)
-//}

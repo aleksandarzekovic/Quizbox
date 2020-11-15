@@ -15,7 +15,7 @@ class QuizResultViewModel @Inject constructor(var quizResultRepository: QuizResu
 
     private val current: Calendar = Calendar.getInstance()
 
-    fun saveResults(correct_answers: Int, total_answers: Int, quiz_name: String) {
+    fun saveResults(correct_answers: Int, total_answers: Int, quiz_name: String?) {
         viewModelScope.launch {
             withContext(Dispatchers.Main) {
                 val a = QuizResultDB(
@@ -26,12 +26,6 @@ class QuizResultViewModel @Inject constructor(var quizResultRepository: QuizResu
                     false
                 )
                 quizResultRepository.saveResult(a)
-
-                val t = quizResultRepository.getResults().map {
-                    it.sendRemote = true
-                    it
-                }
-                val resp = quizResultRepository.saveResultsRemote(t)
             }
         }
     }

@@ -25,12 +25,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_size_medium"
-            android:background="@color/white"
             android:contentDescription="@string/app_name"
             android:elevation="@dimen/margin_size_medium"
             android:paddingLeft="@dimen/margin_size_medium"
             android:paddingRight="@dimen/margin_size_medium"
-            android:src="@drawable/ic_launcher_background"
+            android:src="@drawable/logoapp"
             app:layout_constraintBottom_toTopOf="@id/text_header"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -67,6 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/username_hint"
+                android:maxLines="1"
                 android:text="@={registrationModel.email}"
                 android:textColor="@color/primary_text" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -88,6 +88,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/password_hint"
+                android:maxLines="1"
                 android:inputType="textPassword"
                 android:text="@={registrationModel.password}"
                 android:textColor="@color/primary_text" />
@@ -110,6 +111,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/confirm_password"
                 android:inputType="textPassword"
+                android:maxLines="1"
                 android:text="@={registrationModel.confirm_password}"
                 android:textColor="@color/primary_text" />
 

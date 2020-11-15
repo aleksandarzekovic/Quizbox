@@ -1,12 +1,14 @@
 package me.aleksandarzekovic.quizbox.ui.quizmenu
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
@@ -20,6 +22,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class QuizMenuFragment : DaggerFragment(), QuizMenuAdapter.QuizMenuClickListener {
+
 
     companion object {
         fun newInstance() = QuizMenuFragment()
@@ -49,42 +52,49 @@ class QuizMenuFragment : DaggerFragment(), QuizMenuAdapter.QuizMenuClickListener
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel =
-            ViewModelProvider(this, awareViewModelFactory).get(QuizMenuViewModel::class.java)
-        //bindingQuizMenuFragmentBinding.quizMenuListener = this
-        initToolbars()
+        try {
 
-        viewModel.fetch()
 
-        val a = QuizMenuAdapter(this)
+            super.onActivityCreated(savedInstanceState)
+            viewModel =
+                ViewModelProvider(this, awareViewModelFactory).get(QuizMenuViewModel::class.java)
+            initToolbars()
 
-        bindingQuizMenuFragmentBinding.adapter = a
-        viewModel.quizTypes.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Loading -> {
-                    bindingQuizMenuFragmentBinding.quizMenuProgressBar.visibility = View.VISIBLE
-                }
-                is Resource.Success -> {
-                    Timber.i("Jedan")
-                    it.let {
-                        bindingQuizMenuFragmentBinding.quizMenuProgressBar.visibility = View.GONE
-                        a.submitList(it.data)
+            viewModel.fetch()
+
+            val a = QuizMenuAdapter(this)
+
+            bindingQuizMenuFragmentBinding.adapter = a
+            viewModel.quizTypes.observe(viewLifecycleOwner, {
+                when (it) {
+                    is Resource.Loading -> {
+                        bindingQuizMenuFragmentBinding.quizMenuProgressBar.visibility = View.VISIBLE
                     }
-                    //viewModel.fillData(it.data)
+                    is Resource.Success -> {
+                        Timber.i("Jedan")
+                        it.let {
+                            bindingQuizMenuFragmentBinding.quizMenuProgressBar.visibility =
+                                View.GONE
+                            a.submitList(it.data)
+                        }
+                    }
+                    is Resource.Failure -> {
+                        Snackbar.make(
+                            this.requireView(),
+                            "${it.throwable.message}",
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
                 }
-                is Resource.Failure -> {
-                    Snackbar.make(
-                        this.requireView(),
-                        "${it.throwable.message}",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        })
+            })
 
 
-        Timber.i(findNavController().graph.toString())
+            Timber.i(findNavController().graph.toString())
+        } catch (e: Exception) {
+            Timber.i(Throwable("Greska"))
+            Timber.i(Log.getStackTraceString(e))
+
+        }
     }
 
 
@@ -97,7 +107,8 @@ class QuizMenuFragment : DaggerFragment(), QuizMenuAdapter.QuizMenuClickListener
                     netManager.isConnectedToInternet?.let {
                         if (it) {
                             viewModel.logOut()
-                            findNavController().navigate(R.id.action_quizMenuFragment_to_loginFragment)
+                            view?.findNavController()
+                                ?.navigate(R.id.action_quizMenuFragment_to_loginFragment)
                         } else {
                             Toast.makeText(
                                 this.context,
@@ -111,7 +122,8 @@ class QuizMenuFragment : DaggerFragment(), QuizMenuAdapter.QuizMenuClickListener
                 R.id.action_menu_result -> {
                     netManager.isConnectedToInternet?.let {
                         if (it) {
-                            findNavController().navigate(R.id.action_quizMenuFragment_to_quizListResultsFragment)
+                            view?.findNavController()
+                                ?.navigate(R.id.action_quizMenuFragment_to_quizListResultsFragment)
                         } else {
                             Toast.makeText(
                                 this.context,
@@ -132,13 +144,12 @@ class QuizMenuFragment : DaggerFragment(), QuizMenuAdapter.QuizMenuClickListener
     override fun onItemClick(f: QuizTypeDB) {
         netManager.isConnectedToInternet?.let {
             if (it) {
-                findNavController()
-                    .navigate(
-                        QuizMenuFragmentDirections.actionQuizMenuFragmentToQuizQuestionsFragment(
-                            f.quizId,
-                            f.name.toString()
-                        )
+                view?.findNavController()?.navigate(
+                    QuizMenuFragmentDirections.actionQuizMenuFragmentToQuizQuestionsFragment(
+                        f.quizId,
+                        f.name.toString()
                     )
+                )
 
             } else {
                 Snackbar.make(

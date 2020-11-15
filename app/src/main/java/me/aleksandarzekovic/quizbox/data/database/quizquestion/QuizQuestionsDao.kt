@@ -13,7 +13,7 @@ interface QuizQuestionsDao {
     fun getQuizQuestions(): LiveData<List<QuizQuestionsDB>>
 
     @Query("SELECT * FROM questions")
-    fun getQuizQuestions1(): List<QuizQuestionsDB>
+    suspend fun getQuizQuestions1(): List<QuizQuestionsDB>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(questions: List<QuizQuestionsDB>)

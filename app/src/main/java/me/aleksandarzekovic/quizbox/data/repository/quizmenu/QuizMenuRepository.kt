@@ -1,5 +1,6 @@
 package me.aleksandarzekovic.quizbox.data.repository.quizmenu
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -10,6 +11,7 @@ import me.aleksandarzekovic.quizbox.utils.NetManager
 import me.aleksandarzekovic.quizbox.utils.Resource
 import me.aleksandarzekovic.quizbox.utils.service.logCoroutineInfo
 import me.aleksandarzekovic.quizbox.utils.service.toQuizType
+import timber.log.Timber
 import javax.inject.Inject
 
 class QuizMenuRepository @Inject constructor(
@@ -29,23 +31,30 @@ class QuizMenuRepository @Inject constructor(
 //    }
 
     suspend fun fetchAndUpdate(): Resource<List<QuizTypeDB>> {
-        logCoroutineInfo("fetchAndUpdate")
-        netManager.isConnectedToInternet?.let {
-            if (it) {
-                val resultList = firestore.collection("QuizType").get().await()
-                val eventList = resultList.toObjects(QuizTypeModel::class.java)
-                val eventListQuizTypeDB = eventList.map { it ->
-                    it.toQuizType()
-                }.filter { p -> p.visibility == true }
+        try {
 
-                localDataSource.insertAll(eventListQuizTypeDB)
+            logCoroutineInfo("fetchAndUpdate")
+            netManager.isConnectedToInternet?.let {
+                if (it) {
+                    val resultList = firestore.collection("QuizType").get().await()
+                    val eventList = resultList.toObjects(QuizTypeModel::class.java)
+                    val eventListQuizTypeDB = eventList.map { it ->
+                        it.toQuizType()
+                    }.filter { p -> p.visibility == true }
 
-                return Resource.Success(eventListQuizTypeDB)
+                    localDataSource.insertAll(eventListQuizTypeDB)
+
+                    return Resource.Success(eventListQuizTypeDB)
+                }
+                return Resource.Success(localDataSource.getQuizTypes())
             }
-            return Resource.Success(localDataSource.getQuizTypes())
-        }
-        return Resource.Failure(Throwable("Error."))
+            return Resource.Failure(Throwable("Error."))
 
+        } catch (e: Exception) {
+            Timber.i(Throwable("repository"))
+            Timber.i(Log.getStackTraceString(e))
+            return Resource.Failure(Throwable("Error."))
+        }
     }
 
     suspend fun getQuizTypes(): Resource<List<QuizTypeDB>> {

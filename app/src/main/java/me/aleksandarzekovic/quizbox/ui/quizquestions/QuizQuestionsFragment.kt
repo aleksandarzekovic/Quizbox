@@ -6,9 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.findNavController
 import dagger.android.support.DaggerFragment
 import me.aleksandarzekovic.quizbox.R
 import me.aleksandarzekovic.quizbox.data.database.quizquestion.QuizQuestionsDB
@@ -68,12 +69,15 @@ class QuizQuestionsFragment : DaggerFragment() {
             if (it.isEmpty()) {
                 netManager.isConnectedToInternet?.let { net ->
                     if (net) {
-                        findNavController().navigate(
-                            QuizQuestionsFragmentDirections.actionQuizQuestionsFragmentToQuizResultFragment(
-                                sumCorrectAnswers,
-                                totalAnswer,
-                                quizName
-                            )
+                        val bundle = bundleOf(
+                            "correct_answers" to sumCorrectAnswers,
+                            "total_answers" to totalAnswer,
+                            "quiz_name" to quizName
+                        )
+                        Timber.i(bundle.toString())
+                        view?.findNavController()?.navigate(
+                            R.id.action_quizQuestionsFragment_to_quizResultFragment,
+                            bundle
                         )
                     } else {
                         Toast.makeText(
@@ -89,7 +93,7 @@ class QuizQuestionsFragment : DaggerFragment() {
 
         })
 
-        viewModel.questions.observe(viewLifecycleOwner, {
+        viewModel.questionsDB.observe(viewLifecycleOwner, {
             Timber.i("questions observe")
             if (it != null) {
                 when (it) {

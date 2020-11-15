@@ -5,11 +5,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
+import androidx.navigation.fragment.navArgs
 import dagger.android.support.DaggerFragment
 import me.aleksandarzekovic.quizbox.R
 import me.aleksandarzekovic.quizbox.databinding.QuizResultFragmentBinding
@@ -32,6 +32,7 @@ class QuizResultFragment : DaggerFragment() {
     @Inject
     lateinit var netManager: NetManager
 
+    private val args: QuizResultFragmentArgs by navArgs()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,7 +40,6 @@ class QuizResultFragment : DaggerFragment() {
         quizResultsFragmentBinding = DataBindingUtil.inflate(
             LayoutInflater.from(context), R.layout.quiz_result_fragment, container, false
         )
-
         quizResultsFragmentBinding.lifecycleOwner = this
         return quizResultsFragmentBinding.root
     }
@@ -49,48 +49,23 @@ class QuizResultFragment : DaggerFragment() {
         viewModel =
             ViewModelProvider(this, awareViewModelFactory).get(QuizResultViewModel::class.java)
 
+
         viewModel.saveResults(
-            arguments?.get("correct_answers").toString().toInt(),
-            arguments?.get("total_answers").toString().toInt(),
-            arguments?.get("quiz_name").toString()
+            args.correctAnswers,
+            args.totalAnswers,
+            args.quizName
         )
 
-        quizResultsFragmentBinding.totalAnswers = arguments?.get("total_answers").toString()
-        quizResultsFragmentBinding.correctAnswers = arguments?.get("correct_answers").toString()
+        quizResultsFragmentBinding.totalAnswers = args.totalAnswers.toString()
+        quizResultsFragmentBinding.correctAnswers = args.correctAnswers.toString()
         Log.d("BackStack", findNavController().graph.toString())
         quizResultsFragmentBinding.homeButton.setOnClickListener {
-            netManager.isConnectedToInternet?.let {
-                if (it) {
-                    //p0?.findNavController()?.navigate(R.id.action_resultQuizFragment_to_typeQuizFragment)
-                } else {
-                    Snackbar.make(
-                        this.requireView(),
-                        "Not connected to internet.",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-//                    Toast.makeText(
-//                        this.context,
-//                        "Not connected to internet.",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-                }
-            }
+            it.findNavController().navigate(R.id.action_quizResultFragment_to_quizMenuFragment)
         }
         quizResultsFragmentBinding.listResultButton.setOnClickListener {
-            netManager.isConnectedToInternet?.let {
-                if (it) {
-                    findNavController().navigate(R.id.action_quizResultFragment_to_quizListResultsFragment)
-                } else {
-                    Toast.makeText(
-                        this.context,
-                        "Not connected to internet.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-            }
-
+            it.findNavController()
+                .navigate(R.id.action_quizResultFragment_to_quizListResultsFragment)
         }
     }
-
 }
+

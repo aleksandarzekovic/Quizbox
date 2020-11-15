@@ -1,9 +1,6 @@
 package me.aleksandarzekovic.quizbox.ui.quizquestions
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.*
 import me.aleksandarzekovic.quizbox.data.database.quizquestion.QuizQuestionsDB
 import me.aleksandarzekovic.quizbox.data.models.quizquestions.UserAnswer
 import me.aleksandarzekovic.quizbox.data.repository.quizquestions.QuizQuestionsRepository
@@ -19,15 +16,25 @@ class QuizQuestionsViewModel @Inject constructor(private val quizQuestionsReposi
 
     var questionfinished = MutableLiveData<List<QuizQuestionsDB>>()
 
-    private val _questionsDB: LiveData<Resource<List<QuizQuestionsDB>>>
-        get() {
-            Timber.i("quizQuestionRepo call")
-            return _quizId.switchMap {
-                quizQuestionsRepository.getQuizQuestion(it)
+//    private val _questionsDB: LiveData<Resource<List<QuizQuestionsDB>>>
+//        get() {
+//            Timber.i("quizQuestionRepo call")
+//            return _quizId.switchMap {
+//                quizQuestionsRepository.getQuizQuestion(it)
+//            }
+//        }
+
+    val questionsDB: LiveData<Resource<List<QuizQuestionsDB>>> = _quizId.switchMap { quizId ->
+        liveData {
+            try {
+                emit(Resource.Loading())
+                emit(quizQuestionsRepository.fetchAndUpdateQuestions(quizId))
+            } catch (e: Exception) {
+                emit(Resource.Failure<List<QuizQuestionsDB>>(e))
             }
         }
-
-    val questions = _questionsDB
+    }
+    //val questions = _questionsDB
 
 
     fun fetchData(quiz_id: String) {

@@ -7,11 +7,11 @@
     android:background="@color/primary_dark"
     tools:context=".ui.splash.SplashFragment">
 
-    <TextView
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
         android:textAlignment="center"
+        android:src="@drawable/logoapp"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_large"
         app:layout_constraintBottom_toBottomOf="parent"
