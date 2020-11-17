@@ -1,6 +1,5 @@
 package me.aleksandarzekovic.quizbox.data.repository.quizmenu
 
-import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -9,9 +8,7 @@ import me.aleksandarzekovic.quizbox.data.database.quizmenu.QuizTypeDBDao
 import me.aleksandarzekovic.quizbox.data.models.quizmenu.QuizTypeModel
 import me.aleksandarzekovic.quizbox.utils.NetManager
 import me.aleksandarzekovic.quizbox.utils.Resource
-import me.aleksandarzekovic.quizbox.utils.service.logCoroutineInfo
 import me.aleksandarzekovic.quizbox.utils.service.toQuizType
-import timber.log.Timber
 import javax.inject.Inject
 
 class QuizMenuRepository @Inject constructor(
@@ -21,19 +18,8 @@ class QuizMenuRepository @Inject constructor(
     private var netManager: NetManager
 ) {
 
-//    fun getPreformQuizTypes(): LiveData<Resource<List<QuizTypeDB>>> {
-//        Timber.i("performGetOperation call")
-//        return performGetOperation(
-//            databaseQuery = { localDataSource.getQuizTypes() },
-//            networkCall = { getQuizTypes() },
-//            saveCallResult = { localDataSource.insertAll(it) }
-//        )
-//    }
-
     suspend fun fetchAndUpdate(): Resource<List<QuizTypeDB>> {
         try {
-
-            logCoroutineInfo("fetchAndUpdate")
             netManager.isConnectedToInternet?.let {
                 if (it) {
                     val resultList = firestore.collection("QuizType").get().await()
@@ -51,20 +37,9 @@ class QuizMenuRepository @Inject constructor(
             return Resource.Failure(Throwable("Error."))
 
         } catch (e: Exception) {
-            Timber.i(Throwable("repository"))
-            Timber.i(Log.getStackTraceString(e))
             return Resource.Failure(Throwable("Error."))
         }
     }
-
-    suspend fun getQuizTypes(): Resource<List<QuizTypeDB>> {
-        val resultList = firestore.collection("QuizType").get().await()
-        val eventList = resultList.toObjects(QuizTypeModel::class.java)
-            .filter { p -> p.visibility == true }
-        val listQuizType = eventList.map { it.toQuizType() }
-        return Resource.Success(listQuizType)
-    }
-
 
     fun logOutUser() {
         firebaseAuth.signOut()

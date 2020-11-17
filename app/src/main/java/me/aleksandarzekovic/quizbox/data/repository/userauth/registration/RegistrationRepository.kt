@@ -13,7 +13,7 @@ class RegistrationRepository @Inject constructor(private val firebaseAuth: Fireb
         password: String,
         confirm_password: String
     ): Resource<FirebaseUser?> {
-        if (password.equals(confirm_password)) {
+        if (password == confirm_password) {
             val regResult = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
             return Resource.Success(regResult.user)
         }

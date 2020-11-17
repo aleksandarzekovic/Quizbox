@@ -7,6 +7,7 @@ import androidx.lifecycle.switchMap
 import me.aleksandarzekovic.quizbox.data.models.quizlistresults.QuizListResultsModel
 import me.aleksandarzekovic.quizbox.data.repository.quizlistresults.QuizListResultsRepository
 import me.aleksandarzekovic.quizbox.utils.Resource
+import timber.log.Timber
 import javax.inject.Inject
 
 class QuizListResultsViewModel @Inject constructor(val quizListResultsRepository: QuizListResultsRepository) :
@@ -19,6 +20,7 @@ class QuizListResultsViewModel @Inject constructor(val quizListResultsRepository
             try {
                 emit(Resource.Loading())
                 emit(quizListResultsRepository.getOfQuestionsQuizData())
+                Timber.i(quizListResultsRepository.getOfQuestionsQuizData().toString())
             } catch (e: Exception) {
                 emit(Resource.Failure<List<QuizListResultsModel>>(e))
             }

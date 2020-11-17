@@ -21,7 +21,7 @@
             android:layout_marginTop="10dp"
             android:fontFamily="@font/ubuntu_r"
             android:textColor="@color/white"
-            android:text="@{model.quiz_name + `:   ` +  model.correct_answers + ` / ` + model.total_answers}"
+            android:text="@{model.quizName + `:   ` +  model.correctAnswers + ` / ` + model.totalAnswers}"
             android:textSize="@dimen/text_size_large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

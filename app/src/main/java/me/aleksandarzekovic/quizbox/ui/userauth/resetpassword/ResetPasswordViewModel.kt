@@ -13,17 +13,18 @@ import javax.inject.Inject
 class ResetPasswordViewModel @Inject constructor(private val resetPasswordRepository: ResetPasswordRepository) :
     ViewModel() {
 
-    var resp = MutableLiveData<Resource<Unit>>()
+    var resetInfo = MutableLiveData<Resource<Unit>>()
 
     fun resetPassword(email: String) {
+        resetInfo.value = Resource.Loading()
         viewModelScope.launch {
             withContext(Dispatchers.Main) {
                 try {
-                    resp.value = Resource.Success(resetPasswordRepository.resetPasswordUser(email))
+                    resetInfo.value =
+                        Resource.Success(resetPasswordRepository.resetPasswordUser(email))
                 } catch (e: Exception) {
-                    resp.value = Resource.Failure(Throwable(e.message))
+                    resetInfo.value = Resource.Failure(Throwable(e.message))
                 }
-
             }
         }
     }

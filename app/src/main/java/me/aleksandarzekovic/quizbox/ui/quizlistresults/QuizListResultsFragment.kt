@@ -14,6 +14,7 @@ import me.aleksandarzekovic.quizbox.databinding.QuizListResultsFragmentBinding
 import me.aleksandarzekovic.quizbox.di.daggerawareviewmodelfactory.DaggerAwareViewModelFactory
 import me.aleksandarzekovic.quizbox.utils.NetManager
 import me.aleksandarzekovic.quizbox.utils.Resource
+import timber.log.Timber
 import javax.inject.Inject
 
 class QuizListResultsFragment : DaggerFragment() {
@@ -63,8 +64,13 @@ class QuizListResultsFragment : DaggerFragment() {
                     a.submitList(it.data)
                 }
                 is Resource.Failure -> {
-                    Snackbar.make(requireView(), "${it.throwable.message}", Snackbar.LENGTH_SHORT)
+                    Snackbar.make(
+                        requireView(),
+                        "${it.throwable.message} slika",
+                        Snackbar.LENGTH_SHORT
+                    )
                         .show()
+                    Timber.i(it.throwable.message)
                 }
             }
         })

@@ -1,10 +1,9 @@
 package me.aleksandarzekovic.quizbox.ui.quizmenu
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import me.aleksandarzekovic.quizbox.data.database.quizmenu.QuizTypeDB
 import me.aleksandarzekovic.quizbox.data.repository.quizmenu.QuizMenuRepository
 import me.aleksandarzekovic.quizbox.utils.Resource
@@ -22,8 +21,12 @@ class QuizMenuViewModel @Inject constructor(private val quizMenuRepository: Quiz
 
     val quizTypes = _quizTypes.switchMap {
         liveData {
+            emit(Resource.Loading())
             try {
-                emit(Resource.Loading())
+                viewModelScope.launch {
+                    val result = async { quizMenuRepository.fetchAndUpdate() }
+                }
+
                 emit(quizMenuRepository.fetchAndUpdate())
             } catch (e: Exception) {
                 Timber.i(Throwable("ViewModel"))

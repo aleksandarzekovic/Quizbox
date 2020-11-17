@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
 import me.aleksandarzekovic.quizbox.R
 import me.aleksandarzekovic.quizbox.data.models.userauth.registration.RegistrationModel
@@ -24,60 +24,69 @@ class RegistrationFragment : DaggerFragment() {
 
     @Inject
     lateinit var awareViewModelFactory: DaggerAwareViewModelFactory
-    private lateinit var viewModel: RegistrationViewModel
+    private lateinit var registrationViewModel: RegistrationViewModel
 
-    private lateinit var binding: RegistrationFragmentBinding
+    private lateinit var registrationFragmentBinding: RegistrationFragmentBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(
+        registrationFragmentBinding = DataBindingUtil.inflate(
             LayoutInflater.from(this.context),
             R.layout.registration_fragment,
             container,
             false
         )
-        binding.lifecycleOwner = this
-        return binding.root
+        registrationFragmentBinding.lifecycleOwner = this
+        return registrationFragmentBinding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel =
+        registrationViewModel =
             ViewModelProvider(this, awareViewModelFactory).get(RegistrationViewModel::class.java)
-        binding.registrationViewModel = viewModel
-        binding.registrationModel = RegistrationModel("", "", "")
+        registrationFragmentBinding.registrationViewModel = registrationViewModel
+        registrationFragmentBinding.registrationModel = RegistrationModel("", "", "")
 
-        binding.textRegistrationHaveAcc.setOnClickListener {
+        registrationFragmentBinding.registrationHaveAcc.setOnClickListener {
             view?.findNavController()?.navigate(R.id.action_registrationFragment_to_loginFragment)
         }
 
-        binding.buttonToMenu.setOnClickListener {
+        registrationFragmentBinding.registrationToMenu.setOnClickListener {
             view?.findNavController()
                 ?.navigate(R.id.action_registrationFragment_to_quizMenuFragment)
         }
 
-        viewModel.result.observe(viewLifecycleOwner, {
+        registrationViewModel.registerInfo.observe(viewLifecycleOwner, {
             when (it) {
+
+                is Resource.Loading -> {
+                    registrationFragmentBinding.registrationProgressBar.visibility = View.VISIBLE
+                }
                 is Resource.Success -> {
-                    binding.inputRegistrationEmail.visibility = View.GONE
-                    binding.inputRegistrationPassword.visibility = View.GONE
-                    binding.inputRegistrationConfirmPassword.visibility = View.GONE
-                    binding.buttonRegistration.visibility = View.GONE
-                    binding.textRegistrationHaveAcc.visibility = View.GONE
-                    binding.textHeader.visibility = View.GONE
-                    binding.textSuccessfulRegistration.visibility = View.VISIBLE
-                    binding.textMenuRegistration.visibility = View.VISIBLE
-                    binding.buttonToMenu.visibility = View.VISIBLE
+                    registrationFragmentBinding.registrationProgressBar.visibility = View.INVISIBLE
+                    registrationFragmentBinding.registrationEmail.visibility = View.GONE
+                    registrationFragmentBinding.registrationPassword.visibility = View.GONE
+                    registrationFragmentBinding.registrationConfirmPassword.visibility =
+                        View.GONE
+                    registrationFragmentBinding.registrationButton.visibility = View.GONE
+                    registrationFragmentBinding.registrationHaveAcc.visibility = View.GONE
+                    registrationFragmentBinding.registrationHeader.visibility = View.GONE
+                    registrationFragmentBinding.registrationTextSuccessful.visibility = View.VISIBLE
+                    registrationFragmentBinding.registrationTextMenu.visibility = View.VISIBLE
+                    registrationFragmentBinding.registrationToMenu.visibility = View.VISIBLE
                 }
 
                 is Resource.Failure -> {
-                    Toast.makeText(this.context, "${it.throwable.message}", Toast.LENGTH_SHORT)
+                    registrationFragmentBinding.registrationProgressBar.visibility = View.INVISIBLE
+                    Snackbar.make(
+                        this.requireView(),
+                        "${it.throwable.message}",
+                        Snackbar.LENGTH_SHORT
+                    )
                         .show()
                 }
-                else -> Toast.makeText(this.context, "Error.", Toast.LENGTH_SHORT)
-                    .show()
             }
         })
 

@@ -21,7 +21,7 @@
         tools:context=".ui.userauth.registration.RegistrationFragment">
 
         <ImageView
-            android:id="@+id/image_logo_app"
+            android:id="@+id/registration_logo_app"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_size_medium"
@@ -30,13 +30,13 @@
             android:paddingLeft="@dimen/margin_size_medium"
             android:paddingRight="@dimen/margin_size_medium"
             android:src="@drawable/logoapp"
-            app:layout_constraintBottom_toTopOf="@id/text_header"
+            app:layout_constraintBottom_toTopOf="@id/registration_header"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/text_header"
+            android:id="@+id/registration_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_size_medium"
@@ -46,19 +46,19 @@
             android:text="@string/registration"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_large"
-            app:layout_constraintBottom_toTopOf="@+id/input_registration_email"
+            app:layout_constraintBottom_toTopOf="@+id/registration_email"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/input_registration_email"
+            android:id="@+id/registration_email"
             style="@style/TextInputLayoutAppearance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_size_medium"
             android:layout_marginRight="@dimen/margin_size_medium"
             android:layout_marginBottom="@dimen/margin_size_small"
-            app:layout_constraintBottom_toTopOf="@+id/input_registration_password"
+            app:layout_constraintBottom_toTopOf="@+id/registration_password"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent">
 
@@ -73,14 +73,14 @@
 
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/input_registration_password"
+            android:id="@+id/registration_password"
             style="@style/TextInputLayoutAppearance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_size_medium"
             android:layout_marginRight="@dimen/margin_size_medium"
             android:layout_marginBottom="@dimen/margin_size_small"
-            app:layout_constraintBottom_toTopOf="@id/input_registration_confirm_password"
+            app:layout_constraintBottom_toTopOf="@id/registration_confirm_password"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent">
 
@@ -95,14 +95,14 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/input_registration_confirm_password"
+            android:id="@+id/registration_confirm_password"
             style="@style/TextInputLayoutAppearance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_size_medium"
             android:layout_marginRight="@dimen/margin_size_medium"
             android:layout_marginBottom="@dimen/margin_size_small"
-            app:layout_constraintBottom_toTopOf="@id/button_registration"
+            app:layout_constraintBottom_toTopOf="@id/registration_progress_bar"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent">
 
@@ -117,8 +117,21 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <ProgressBar
+            android:id="@+id/registration_progress_bar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_size_small"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/white"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@id/registration_button"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
         <Button
-            android:id="@+id/button_registration"
+            android:id="@+id/registration_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_size_medium"
@@ -128,12 +141,12 @@
             android:onClick="@{() -> registrationViewModel.registerUser(registrationModel.email, registrationModel.password, registrationModel.confirm_password)}"
             android:text="@string/registration"
             android:textColor="@color/white"
-            app:layout_constraintBottom_toTopOf="@id/text_registration_have_acc"
+            app:layout_constraintBottom_toTopOf="@id/registration_have_acc"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
         <TextView
-            android:id="@+id/text_registration_have_acc"
+            android:id="@+id/registration_have_acc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_size_medium"
@@ -150,7 +163,7 @@
             app:layout_constraintRight_toRightOf="parent" />
 
         <TextView
-            android:id="@+id/text_successful_registration"
+            android:id="@+id/registration_text_successful"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_size_medium"
@@ -162,13 +175,13 @@
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_medium"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/text_menu_registration"
+            app:layout_constraintBottom_toTopOf="@id/registration_text_menu"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_logo_app" />
+            app:layout_constraintTop_toBottomOf="@id/registration_logo_app" />
 
         <TextView
-            android:id="@+id/text_menu_registration"
+            android:id="@+id/registration_text_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_size_medium"
@@ -180,14 +193,14 @@
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_medium"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/button_to_menu"
+            app:layout_constraintBottom_toTopOf="@id/registration_to_menu"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_successful_registration" />
+            app:layout_constraintTop_toBottomOf="@id/registration_text_successful" />
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/button_to_menu"
+            android:id="@+id/registration_to_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_size_medium"

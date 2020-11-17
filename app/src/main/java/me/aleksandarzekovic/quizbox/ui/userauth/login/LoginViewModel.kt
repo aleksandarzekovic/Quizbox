@@ -1,6 +1,5 @@
 package me.aleksandarzekovic.quizbox.ui.userauth.login
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,17 +14,16 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(private val loginRepository: LoginRepository) :
     ViewModel() {
 
-    var user = MutableLiveData<Resource<FirebaseUser?>>()
+    var userInfo = MutableLiveData<Resource<FirebaseUser?>>()
 
     fun onClickLogIn(email: String, password: String) {
+        userInfo.value = Resource.Loading()
         viewModelScope.launch {
             withContext(Dispatchers.Main) {
-                Log.d("Taaaa", "upao")
                 try {
-                    val result = loginRepository.logIn(email, password)
-                    user.value = result
+                    userInfo.value = loginRepository.logIn(email, password)
                 } catch (e: Exception) {
-                    user.value = Resource.Failure(Throwable(e.message))
+                    userInfo.value = Resource.Failure(Throwable(e.message))
                 }
 
             }

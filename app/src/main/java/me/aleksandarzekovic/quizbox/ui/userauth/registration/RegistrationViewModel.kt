@@ -14,16 +14,17 @@ import javax.inject.Inject
 class RegistrationViewModel @Inject constructor(private var registrationRepository: RegistrationRepository) :
     ViewModel() {
 
-    var result = MutableLiveData<Resource<FirebaseUser?>>()
+    var registerInfo = MutableLiveData<Resource<FirebaseUser?>>()
 
     fun registerUser(email: String, password: String, confirmPassword: String) {
+        registerInfo.value = Resource.Loading()
         viewModelScope.launch {
             withContext(Dispatchers.Main) {
                 try {
-                    result.value =
+                    registerInfo.value =
                         registrationRepository.registerUser(email, password, confirmPassword)
                 } catch (e: Exception) {
-                    result.value = Resource.Failure(Throwable(e.message))
+                    registerInfo.value = Resource.Failure(Throwable(e.message))
                 }
             }
         }

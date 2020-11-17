@@ -6,6 +6,7 @@ import kotlinx.coroutines.tasks.await
 import me.aleksandarzekovic.quizbox.data.models.quizlistresults.QuizListResultsModel
 import me.aleksandarzekovic.quizbox.utils.NetManager
 import me.aleksandarzekovic.quizbox.utils.Resource
+import timber.log.Timber
 import javax.inject.Inject
 
 class QuizListResultsRepository @Inject constructor(
@@ -17,10 +18,13 @@ class QuizListResultsRepository @Inject constructor(
     suspend fun getOfQuestionsQuizData(): Resource<List<QuizListResultsModel>?> {
         netManager.isConnectedToInternet?.let {
             if (it) {
+                Timber.i("tttt")
                 val result =
                     fireStore.collection("Results").document("${firebaseAuth.currentUser!!.email}")
                         .collection("Statistic").get().await()
+                Timber.i(result.toString())
                 val list = result.toObjects(QuizListResultsModel::class.java)
+                //Timber.i(list.toString())
                 val bestScore = bestScores(list)
                 return Resource.Success(bestScore)
             }
@@ -31,14 +35,13 @@ class QuizListResultsRepository @Inject constructor(
 
     private fun bestScores(list: List<QuizListResultsModel>?): List<QuizListResultsModel> {
         val distinctQuizNames = list!!.distinctBy {
-            it.quiz_name
+            it.quizName
         }
         val arrayList = ArrayList(distinctQuizNames)
 
         list.forEach { lista ->
-            arrayList.find { it!!.quiz_name == lista.quiz_name && it.correct_answers!!.toInt() < lista.correct_answers!!.toInt() }
-                ?.correct_answers = lista.correct_answers
-
+            arrayList.find { it!!.quizName == lista.quizName && it.correctAnswers!!.toInt() < lista.correctAnswers!!.toInt() }
+                ?.correctAnswers = lista.correctAnswers
         }
         return arrayList
     }

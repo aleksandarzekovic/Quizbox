@@ -4,11 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
 import me.aleksandarzekovic.quizbox.R
 import me.aleksandarzekovic.quizbox.data.models.userauth.login.LoginModel
@@ -23,8 +22,8 @@ class LoginFragment : DaggerFragment() {
         fun newInstance() = LoginFragment()
     }
 
-    private lateinit var viewModel: LoginViewModel
-    private lateinit var binding: LoginFragmentBinding
+    private lateinit var loginViewModel: LoginViewModel
+    private lateinit var loginFragmentBinding: LoginFragmentBinding
 
     @Inject
     lateinit var awareViewModelFactory: DaggerAwareViewModelFactory
@@ -33,46 +32,54 @@ class LoginFragment : DaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(
+        loginFragmentBinding = DataBindingUtil.inflate(
             LayoutInflater.from(this.context),
             R.layout.login_fragment,
             container,
             false
         )
-        binding.lifecycleOwner = this
-        return binding.root
+        loginFragmentBinding.lifecycleOwner = this
+        return loginFragmentBinding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this, awareViewModelFactory).get(LoginViewModel::class.java)
-        binding.loginViewModel = viewModel
-        binding.loginModel = LoginModel("", "")
+        loginViewModel =
+            ViewModelProvider(this, awareViewModelFactory).get(LoginViewModel::class.java)
+        loginFragmentBinding.loginViewModel = loginViewModel
+        loginFragmentBinding.loginModel = LoginModel("", "")
 
-        binding.forgotPassword.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_resetPasswordFragment)
+        loginFragmentBinding.loginForgotPassword.setOnClickListener {
+            view?.findNavController()?.navigate(R.id.action_loginFragment_to_resetPasswordFragment)
         }
 
-        binding.registration.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)
+        loginFragmentBinding.loginRegistration.setOnClickListener {
+            view?.findNavController()?.navigate(R.id.action_loginFragment_to_registrationFragment)
         }
 
-        viewModel.user.observe(viewLifecycleOwner,
+        loginViewModel.userInfo.observe(
+            viewLifecycleOwner,
             {
                 when (it) {
+
+                    is Resource.Loading -> {
+                        loginFragmentBinding.loginProgressBar.visibility = View.VISIBLE
+                    }
                     is Resource.Success -> {
-                        Toast.makeText(this.context, "${it.data}", Toast.LENGTH_SHORT)
-                            .show()
+                        loginFragmentBinding.loginProgressBar.visibility = View.INVISIBLE
                         view?.findNavController()
                             ?.navigate(R.id.action_loginFragment_to_quizMenuFragment)
                     }
 
                     is Resource.Failure -> {
-                        Toast.makeText(this.context, "${it.throwable.message}", Toast.LENGTH_SHORT)
+                        loginFragmentBinding.loginProgressBar.visibility = View.INVISIBLE
+                        Snackbar.make(
+                            this.requireView(),
+                            "${it.throwable.message}",
+                            Snackbar.LENGTH_SHORT
+                        )
                             .show()
                     }
-                    else -> Toast.makeText(this.context, "Else.", Toast.LENGTH_SHORT)
-                        .show()
                 }
             })
     }

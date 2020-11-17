@@ -37,7 +37,7 @@ class QuizListResultsDiffCallback : DiffUtil.ItemCallback<QuizListResultsModel>(
         oldItem: QuizListResultsModel,
         newItem: QuizListResultsModel
     ): Boolean {
-        return oldItem.document_id == newItem.document_id
+        return oldItem.documentId == newItem.documentId
     }
 
 
