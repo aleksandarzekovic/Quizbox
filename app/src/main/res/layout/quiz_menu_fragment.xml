@@ -69,7 +69,7 @@
             android:id="@+id/quiz_menu_progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:indeterminateTint="@color/primary_dark"
+            android:indeterminateTint="@color/accent"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

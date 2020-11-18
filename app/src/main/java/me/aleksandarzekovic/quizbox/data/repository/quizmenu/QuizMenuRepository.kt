@@ -14,18 +14,18 @@ import javax.inject.Inject
 class QuizMenuRepository @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val localDataSource: QuizTypeDBDao,
-    private val firestore: FirebaseFirestore,
+    private val fireStore: FirebaseFirestore,
     private var netManager: NetManager
 ) {
 
     suspend fun fetchAndUpdate(): Resource<List<QuizTypeDB>> {
         try {
-            netManager.isConnectedToInternet?.let {
+            netManager.isConnectedToInternet?.let { it ->
                 if (it) {
-                    val resultList = firestore.collection("QuizType").get().await()
+                    val resultList = fireStore.collection("QuizType").get().await()
                     val eventList = resultList.toObjects(QuizTypeModel::class.java)
-                    val eventListQuizTypeDB = eventList.map { it ->
-                        it.toQuizType()
+                    val eventListQuizTypeDB = eventList.map { list ->
+                        list.toQuizType()
                     }.filter { p -> p.visibility == true }
 
                     localDataSource.insertAll(eventListQuizTypeDB)

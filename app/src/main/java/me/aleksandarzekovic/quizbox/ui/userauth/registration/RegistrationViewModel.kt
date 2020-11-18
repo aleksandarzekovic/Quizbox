@@ -1,5 +1,6 @@
 package me.aleksandarzekovic.quizbox.ui.userauth.registration
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,17 +15,19 @@ import javax.inject.Inject
 class RegistrationViewModel @Inject constructor(private var registrationRepository: RegistrationRepository) :
     ViewModel() {
 
-    var registerInfo = MutableLiveData<Resource<FirebaseUser?>>()
+    private var _registerInfo = MutableLiveData<Resource<FirebaseUser?>>()
+    val registerInfo: LiveData<Resource<FirebaseUser?>>
+        get() = _registerInfo
 
     fun registerUser(email: String, password: String, confirmPassword: String) {
-        registerInfo.value = Resource.Loading()
+        _registerInfo.value = Resource.Loading()
         viewModelScope.launch {
             withContext(Dispatchers.Main) {
                 try {
-                    registerInfo.value =
+                    _registerInfo.value =
                         registrationRepository.registerUser(email, password, confirmPassword)
                 } catch (e: Exception) {
-                    registerInfo.value = Resource.Failure(Throwable(e.message))
+                    _registerInfo.value = Resource.Failure(Throwable(e.message))
                 }
             }
         }

@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import dagger.android.support.DaggerFragment
 import me.aleksandarzekovic.quizbox.R
+import me.aleksandarzekovic.quizbox.databinding.SplashFragmentBinding
 import me.aleksandarzekovic.quizbox.di.daggerawareviewmodelfactory.DaggerAwareViewModelFactory
 import me.aleksandarzekovic.quizbox.utils.Resource
 import javax.inject.Inject
@@ -21,6 +23,7 @@ class SplashFragment : DaggerFragment() {
     }
 
     private lateinit var viewModel: SplashViewModel
+    private lateinit var splashFragmentBinding: SplashFragmentBinding
 
     @Inject
     lateinit var awareViewModelFactory: DaggerAwareViewModelFactory
@@ -29,14 +32,25 @@ class SplashFragment : DaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.splash_fragment, container, false)
+        splashFragmentBinding = DataBindingUtil.inflate(
+            LayoutInflater.from(context),
+            R.layout.splash_fragment,
+            container,
+            false
+        )
+        splashFragmentBinding.lifecycleOwner = this
+        return splashFragmentBinding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this, awareViewModelFactory).get(SplashViewModel::class.java)
-        viewModel.user.observe(viewLifecycleOwner, {
+        viewModel.checkUser()
+        viewModel.userInfo.observe(viewLifecycleOwner, {
             when (it) {
+                is Resource.Loading -> {
+                    splashFragmentBinding.splashProgressBar.visibility = View.VISIBLE
+                }
                 is Resource.Success -> {
                     if (it.data != null) {
                         Handler().postDelayed({
@@ -57,7 +71,7 @@ class SplashFragment : DaggerFragment() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-                else -> Toast.makeText(context, "Else", Toast.LENGTH_SHORT).show()
+
             }
         })
     }

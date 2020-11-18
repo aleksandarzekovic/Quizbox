@@ -42,10 +42,7 @@ class QuizMenuDiffCallback : DiffUtil.ItemCallback<QuizTypeDB>() {
         return oldItem.quizId == newItem.quizId
     }
 
-
     override fun areContentsTheSame(oldItem: QuizTypeDB, newItem: QuizTypeDB): Boolean {
         return oldItem == newItem
     }
-
-
 }

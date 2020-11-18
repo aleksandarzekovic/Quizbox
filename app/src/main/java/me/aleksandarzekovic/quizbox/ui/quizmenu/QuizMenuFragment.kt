@@ -1,15 +1,12 @@
 package me.aleksandarzekovic.quizbox.ui.quizmenu
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
 import me.aleksandarzekovic.quizbox.R
@@ -52,49 +49,37 @@ class QuizMenuFragment : DaggerFragment(), QuizMenuAdapter.QuizMenuClickListener
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
-        try {
+        super.onActivityCreated(savedInstanceState)
+        viewModel =
+            ViewModelProvider(this, awareViewModelFactory).get(QuizMenuViewModel::class.java)
+        initToolbars()
 
+        viewModel.quizTypes()
 
-            super.onActivityCreated(savedInstanceState)
-            viewModel =
-                ViewModelProvider(this, awareViewModelFactory).get(QuizMenuViewModel::class.java)
-            initToolbars()
+        val quizMenuAdapter = QuizMenuAdapter(this)
 
-            viewModel.fetch()
-
-            val a = QuizMenuAdapter(this)
-
-            bindingQuizMenuFragmentBinding.adapter = a
-            viewModel.quizTypes.observe(viewLifecycleOwner, {
-                when (it) {
-                    is Resource.Loading -> {
-                        bindingQuizMenuFragmentBinding.quizMenuProgressBar.visibility = View.VISIBLE
-                    }
-                    is Resource.Success -> {
-                        Timber.i("Jedan")
-                        it.let {
-                            bindingQuizMenuFragmentBinding.quizMenuProgressBar.visibility =
-                                View.GONE
-                            a.submitList(it.data)
-                        }
-                    }
-                    is Resource.Failure -> {
-                        Snackbar.make(
-                            this.requireView(),
-                            "${it.throwable.message}",
-                            Snackbar.LENGTH_SHORT
-                        ).show()
+        bindingQuizMenuFragmentBinding.adapter = quizMenuAdapter
+        viewModel.quizTypes.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Loading -> {
+                    bindingQuizMenuFragmentBinding.quizMenuProgressBar.visibility = View.VISIBLE
+                }
+                is Resource.Success -> {
+                    it.let {
+                        bindingQuizMenuFragmentBinding.quizMenuProgressBar.visibility =
+                            View.INVISIBLE
+                        quizMenuAdapter.submitList(it.data)
                     }
                 }
-            })
-
-
-            Timber.i(findNavController().graph.toString())
-        } catch (e: Exception) {
-            Timber.i(Throwable("Greska"))
-            Timber.i(Log.getStackTraceString(e))
-
-        }
+                is Resource.Failure -> {
+                    Snackbar.make(
+                        this.requireView(),
+                        "${it.throwable.message}",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        })
     }
 
 
@@ -110,10 +95,10 @@ class QuizMenuFragment : DaggerFragment(), QuizMenuAdapter.QuizMenuClickListener
                             view?.findNavController()
                                 ?.navigate(R.id.action_quizMenuFragment_to_loginFragment)
                         } else {
-                            Toast.makeText(
-                                this.context,
+                            Snackbar.make(
+                                this.requireView(),
                                 "Not connected to internet.",
-                                Toast.LENGTH_SHORT
+                                Snackbar.LENGTH_SHORT
                             ).show()
                         }
                     }
@@ -125,17 +110,16 @@ class QuizMenuFragment : DaggerFragment(), QuizMenuAdapter.QuizMenuClickListener
                             view?.findNavController()
                                 ?.navigate(R.id.action_quizMenuFragment_to_quizListResultsFragment)
                         } else {
-                            Toast.makeText(
-                                this.context,
+                            Snackbar.make(
+                                this.requireView(),
                                 "Not connected to internet.",
-                                Toast.LENGTH_SHORT
+                                Snackbar.LENGTH_SHORT
                             ).show()
                         }
                     }
 
                 }
             }
-
             true
         }
         bindingQuizMenuFragmentBinding.quizMenuToolbar.inflateMenu(R.menu.main_menu)
@@ -161,9 +145,4 @@ class QuizMenuFragment : DaggerFragment(), QuizMenuAdapter.QuizMenuClickListener
 
         }
     }
-
-//    override fun onItemClick(f: QuizTypeDB) {
-//
-//    }
-
 }

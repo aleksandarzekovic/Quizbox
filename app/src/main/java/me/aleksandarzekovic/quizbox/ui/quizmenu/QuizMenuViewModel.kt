@@ -1,47 +1,36 @@
 package me.aleksandarzekovic.quizbox.ui.quizmenu
 
-import android.util.Log
-import androidx.lifecycle.*
-import kotlinx.coroutines.async
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import me.aleksandarzekovic.quizbox.data.database.quizmenu.QuizTypeDB
 import me.aleksandarzekovic.quizbox.data.repository.quizmenu.QuizMenuRepository
 import me.aleksandarzekovic.quizbox.utils.Resource
-import timber.log.Timber
 import javax.inject.Inject
 
 class QuizMenuViewModel @Inject constructor(private val quizMenuRepository: QuizMenuRepository) :
     ViewModel() {
 
-    private val _quizTypes = MutableLiveData<List<QuizTypeDB>>()
+    private val _quizTypes = MutableLiveData<Resource<List<QuizTypeDB>>>()
+    val quizTypes: LiveData<Resource<List<QuizTypeDB>>>
+        get() = _quizTypes
 
-    fun fetch() {
-        _quizTypes.value = listOf()
-    }
-
-    val quizTypes = _quizTypes.switchMap {
-        liveData {
-            emit(Resource.Loading())
-            try {
-                viewModelScope.launch {
-                    val result = async { quizMenuRepository.fetchAndUpdate() }
+    fun quizTypes() {
+        viewModelScope.launch {
+            _quizTypes.value = Resource.Loading()
+            withContext(Dispatchers.Main) {
+                try {
+                    _quizTypes.value = quizMenuRepository.fetchAndUpdate()
+                } catch (e: Exception) {
+                    _quizTypes.value = Resource.Failure(Throwable(e.message))
                 }
-
-                emit(quizMenuRepository.fetchAndUpdate())
-            } catch (e: Exception) {
-                Timber.i(Throwable("ViewModel"))
-                Timber.i(Log.getStackTraceString(e))
-                emit(Resource.Failure<List<QuizTypeDB>>(Throwable(e.message)))
             }
         }
     }
-//
-//    fun run(){
-//        viewModelScope.launch {
-//            data.value = quizMenuRepository.getPreformQuizTypes()
-//        }
-//    }
-
 
     fun logOut() {
         quizMenuRepository.logOutUser()

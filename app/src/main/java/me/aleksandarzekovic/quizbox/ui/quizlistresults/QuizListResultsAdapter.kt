@@ -40,13 +40,10 @@ class QuizListResultsDiffCallback : DiffUtil.ItemCallback<QuizListResultsModel>(
         return oldItem.documentId == newItem.documentId
     }
 
-
     override fun areContentsTheSame(
         oldItem: QuizListResultsModel,
         newItem: QuizListResultsModel
     ): Boolean {
         return oldItem == newItem
     }
-
-
 }

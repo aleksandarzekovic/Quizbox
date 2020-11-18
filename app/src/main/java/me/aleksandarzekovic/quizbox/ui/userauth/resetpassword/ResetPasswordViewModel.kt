@@ -1,5 +1,6 @@
 package me.aleksandarzekovic.quizbox.ui.userauth.resetpassword
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,17 +14,19 @@ import javax.inject.Inject
 class ResetPasswordViewModel @Inject constructor(private val resetPasswordRepository: ResetPasswordRepository) :
     ViewModel() {
 
-    var resetInfo = MutableLiveData<Resource<Unit>>()
+    private var _resetInfo = MutableLiveData<Resource<Unit>>()
+    val resetInfo: LiveData<Resource<Unit>>
+        get() = _resetInfo
 
     fun resetPassword(email: String) {
-        resetInfo.value = Resource.Loading()
+        _resetInfo.value = Resource.Loading()
         viewModelScope.launch {
             withContext(Dispatchers.Main) {
                 try {
-                    resetInfo.value =
+                    _resetInfo.value =
                         Resource.Success(resetPasswordRepository.resetPasswordUser(email))
                 } catch (e: Exception) {
-                    resetInfo.value = Resource.Failure(Throwable(e.message))
+                    _resetInfo.value = Resource.Failure(Throwable(e.message))
                 }
             }
         }
