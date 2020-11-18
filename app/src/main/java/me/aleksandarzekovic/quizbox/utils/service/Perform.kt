@@ -9,7 +9,6 @@ import me.aleksandarzekovic.quizbox.data.database.quizquestion.QuizQuestionsDB
 import me.aleksandarzekovic.quizbox.data.models.quizmenu.QuizTypeModel
 import me.aleksandarzekovic.quizbox.data.models.quizquestions.QuizQuestionsModel
 import me.aleksandarzekovic.quizbox.utils.Resource
-import timber.log.Timber
 import java.io.IOException
 
 fun <T, A> performGetOperation(
@@ -74,4 +73,4 @@ fun QuizTypeModel.toQuizType() = QuizTypeDB(
     visibility = visibility
 )
 
-fun logCoroutineInfo(msg: String) = Timber.i("Running on: [${Thread.currentThread().name}] | $msg")
+//fun logCoroutineInfo(msg: String) = Timber.i("Running on: [${Thread.currentThread().name}] | $msg")

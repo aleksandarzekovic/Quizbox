@@ -49,6 +49,7 @@
             android:layout_marginEnd="50dp"
             android:text="@{numOfQuestion}"
             android:textSize="@dimen/text_size_large"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageButton"
             app:layout_constraintTop_toTopOf="parent" />
@@ -63,6 +64,7 @@
             android:layout_marginRight="@dimen/margin_size_medium"
             android:background="@color/divider"
             android:orientation="vertical"
+            android:visibility="invisible"
             android:padding="4dp"
             app:cardElevation="8dp"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -89,6 +91,7 @@
             android:layout_height="50dp"
             android:text="@string/zero"
             android:textSize="35sp"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/progressBar"
             app:layout_constraintEnd_toEndOf="@+id/progressBar"
             app:layout_constraintStart_toStartOf="@+id/progressBar"
@@ -101,6 +104,7 @@
             android:layout_marginLeft="@dimen/margin_size_small"
             android:layout_marginTop="30dp"
             android:layout_marginRight="@dimen/margin_size_small"
+            android:visibility="invisible"
             android:background="@drawable/outline_button_bg"
             android:onClick="@{() -> quizQuestionsViewModel.onClickAnswerOption(userAnswer.OPTION_A, question)}"
             android:text="@{question.option_a}"
@@ -114,6 +118,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_margin="@dimen/margin_size_small"
+            android:visibility="invisible"
             android:background="@drawable/outline_button_bg"
             android:onClick="@{() -> quizQuestionsViewModel.onClickAnswerOption(userAnswer.OPTION_B, question)}"
             android:text="@{question.option_b}"
@@ -126,6 +131,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_margin="@dimen/margin_size_small"
+            android:visibility="invisible"
             android:background="@drawable/outline_button_bg"
             android:onClick="@{() -> quizQuestionsViewModel.onClickAnswerOption(userAnswer.OPTION_C, question)}"
             android:text="@{question.option_c}"
@@ -138,6 +144,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_margin="@dimen/margin_size_small"
+            android:visibility="invisible"
             android:background="@drawable/outline_button_bg"
             android:onClick="@{() -> quizQuestionsViewModel.onClickAnswerOption(userAnswer.OPTION_D, question)}"
             android:text="@{question.option_d}"
@@ -153,10 +160,10 @@
             android:onClick="@{() -> quizQuestionsViewModel.onClickNext(question)}"
             android:text="@string/next"
             android:textColor="@color/white"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            tools:visibility="visible" />
+            app:layout_constraintRight_toRightOf="parent" />
 
 
         <ProgressBar
@@ -173,6 +180,23 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/quiz_question"
+            tools:visibility="invisible" />
+
+        <ProgressBar
+            android:id="@+id/preProgressBar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="20dp"
+            android:indeterminate="false"
+            android:indeterminateTint="@color/accent"
+            android:progressDrawable="@drawable/progress_bar"
+            android:progressTint="@color/accent"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:visibility="invisible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

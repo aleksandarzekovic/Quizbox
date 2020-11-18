@@ -1,57 +1,53 @@
 package me.aleksandarzekovic.quizbox.ui.quizquestions
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import me.aleksandarzekovic.quizbox.data.database.quizquestion.QuizQuestionsDB
 import me.aleksandarzekovic.quizbox.data.models.quizquestions.UserAnswer
 import me.aleksandarzekovic.quizbox.data.repository.quizquestions.QuizQuestionsRepository
 import me.aleksandarzekovic.quizbox.utils.Resource
-import timber.log.Timber
 import javax.inject.Inject
 
 class QuizQuestionsViewModel @Inject constructor(private val quizQuestionsRepository: QuizQuestionsRepository) :
     ViewModel() {
 
-    private val _quizId = MutableLiveData<String>()
-    var answer = MutableLiveData<List<UserAnswer>>()
+    val answer = MutableLiveData<List<UserAnswer>>()
 
-    var questionfinished = MutableLiveData<List<QuizQuestionsDB>>()
+    private val _remainingQuestions = MutableLiveData<List<QuizQuestionsDB>>()
+    val remainingQuestions: LiveData<List<QuizQuestionsDB>>
+        get() = _remainingQuestions
 
-//    private val _questionsDB: LiveData<Resource<List<QuizQuestionsDB>>>
-//        get() {
-//            Timber.i("quizQuestionRepo call")
-//            return _quizId.switchMap {
-//                quizQuestionsRepository.getQuizQuestion(it)
-//            }
-//        }
+    private val _questions = MutableLiveData<Resource<List<QuizQuestionsDB>>>()
+    val questions: LiveData<Resource<List<QuizQuestionsDB>>>
+        get() = _questions
 
-    val questionsDB: LiveData<Resource<List<QuizQuestionsDB>>> = _quizId.switchMap { quizId ->
-        liveData {
-            try {
-                emit(Resource.Loading())
-                emit(quizQuestionsRepository.fetchAndUpdateQuestions(quizId))
-            } catch (e: Exception) {
-                emit(Resource.Failure<List<QuizQuestionsDB>>(e))
+    fun getQuestions(quizId: String) {
+        _questions.value = Resource.Loading()
+        viewModelScope.launch {
+            withContext(Dispatchers.Main) {
+                try {
+                    _questions.value = quizQuestionsRepository.fetchAndUpdateQuestions(quizId)
+                } catch (e: Exception) {
+                    _questions.value = Resource.Failure(Throwable(e.message))
+                }
             }
         }
     }
-    //val questions = _questionsDB
 
-
-    fun fetchData(quiz_id: String) {
-        _quizId.value = quiz_id
-    }
-
-    fun dataUpdate(list: List<QuizQuestionsDB>) {
-        Timber.i("dataUpdate call")
-        questionfinished.value = list
+    fun setQuizQuestions(list: List<QuizQuestionsDB>) {
+        _remainingQuestions.value = list
     }
 
 
     fun onClickNext(model: QuizQuestionsDB) {
-        if (questionfinished.value != null) {
-            questionfinished.value = (questionfinished.value as List<QuizQuestionsDB>).drop(1)
+        if (_remainingQuestions.value != null) {
+            _remainingQuestions.value = (_remainingQuestions.value as List<QuizQuestionsDB>).drop(1)
         }
-        Timber.i(questionfinished.value.toString())
     }
 
     fun onClickAnswerOption(userAnswer: UserAnswer, question: QuizQuestionsDB) {
@@ -89,6 +85,7 @@ class QuizQuestionsViewModel @Inject constructor(private val quizQuestionsReposi
                 answer.value = mutableListOf(UserAnswer.NO_CHECKED, UserAnswer.INCORRECT, correct)
             }
             else -> {
+                answer.value = mutableListOf(UserAnswer.NO_CHECKED, UserAnswer.INCORRECT, correct)
             }
         }
     }

@@ -5,11 +5,11 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
 import me.aleksandarzekovic.quizbox.R
 import me.aleksandarzekovic.quizbox.data.database.quizquestion.QuizQuestionsDB
@@ -18,7 +18,8 @@ import me.aleksandarzekovic.quizbox.databinding.QuizQuestionsFragmentBinding
 import me.aleksandarzekovic.quizbox.di.daggerawareviewmodelfactory.DaggerAwareViewModelFactory
 import me.aleksandarzekovic.quizbox.utils.NetManager
 import me.aleksandarzekovic.quizbox.utils.Resource
-import timber.log.Timber
+import me.aleksandarzekovic.quizbox.utils.ViewStatus.INVISIBLE
+import me.aleksandarzekovic.quizbox.utils.ViewStatus.VISIBLE
 import javax.inject.Inject
 
 class QuizQuestionsFragment : DaggerFragment() {
@@ -62,56 +63,45 @@ class QuizQuestionsFragment : DaggerFragment() {
 
         quizQuestionsFragmentBinding.quizQuestionsViewModel = viewModel
 
-        viewModel.fetchData(quizId)
+        viewModel.getQuestions(quizId)
 
-        viewModel.questionfinished.observe(viewLifecycleOwner, {
-            Timber.i("questionfinished observe")
+        viewModel.remainingQuestions.observe(viewLifecycleOwner, {
             if (it.isEmpty()) {
-                netManager.isConnectedToInternet?.let { net ->
-                    if (net) {
-                        val bundle = bundleOf(
-                            "correct_answers" to sumCorrectAnswers,
-                            "total_answers" to totalAnswer,
-                            "quiz_name" to quizName
-                        )
-                        Timber.i(bundle.toString())
-                        view?.findNavController()?.navigate(
-                            R.id.action_quizQuestionsFragment_to_quizResultFragment,
-                            bundle
-                        )
-                    } else {
-                        Toast.makeText(
-                            this.context,
-                            "Not connected to internet.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
+                val bundle = bundleOf(
+                    "correct_answers" to sumCorrectAnswers,
+                    "total_answers" to totalAnswer,
+                    "quiz_name" to quizName
+                )
+                view?.findNavController()?.navigate(
+                    R.id.action_quizQuestionsFragment_to_quizResultFragment,
+                    bundle
+                )
             } else {
-                setView(quizName, it)
+                setView(it)
             }
 
         })
 
-        viewModel.questionsDB.observe(viewLifecycleOwner, {
-            Timber.i("questions observe")
+        viewModel.questions.observe(viewLifecycleOwner, {
             if (it != null) {
                 when (it) {
+                    is Resource.Loading -> {
+                        quizQuestionsFragmentBinding.preProgressBar.visibility = View.VISIBLE
+                    }
                     is Resource.Success -> {
-                        Timber.i("questions Resource.Success observe")
+                        quizQuestionsFragmentBinding.preProgressBar.visibility = View.INVISIBLE
+                        visibleUIElements()
                         totalAnswer = it.data.size
-                        Timber.i("questions ${totalAnswer} observe")
-                        viewModel.dataUpdate(it.data)
+                        viewModel.setQuizQuestions(it.data)
                     }
 
                     is Resource.Failure -> {
-                        Timber.i("questions Resource.Error observe")
-                        Toast.makeText(this.context, "${it.throwable.message}", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                    is Resource.Loading -> {
-                        Timber.i("questions Resource.Loading observe")
-                        Toast.makeText(this.context, "Loading", Toast.LENGTH_SHORT)
+                        quizQuestionsFragmentBinding.preProgressBar.visibility = View.INVISIBLE
+                        Snackbar.make(
+                            this.requireView(),
+                            "${it.throwable.message}",
+                            Snackbar.LENGTH_SHORT
+                        )
                             .show()
                     }
                 }
@@ -123,10 +113,10 @@ class QuizQuestionsFragment : DaggerFragment() {
         })
     }
 
-    private fun setView(quizName: String, listQuestions: List<QuizQuestionsDB>) {
+    private fun setView(listQuestions: List<QuizQuestionsDB>) {
         if (listQuestions.isNotEmpty()) {
             questionQuizModelDB = listQuestions[questionsIndex]
-            disableOrEnableOptions("ENABLE")
+            disableOrEnableOptions(VISIBLE)
             quizQuestionsFragmentBinding.question = listQuestions[questionsIndex]
             quizQuestionsFragmentBinding.numOfQuestion =
                 "${totalAnswer.minus(listQuestions.size).plus(1)} / $totalAnswer"
@@ -144,8 +134,18 @@ class QuizQuestionsFragment : DaggerFragment() {
         quizQuestionsFragmentBinding.quizFourAnswer.setBackgroundResource(R.drawable.outline_button_bg)
     }
 
-    private fun disableOrEnableOptions(status: String) {
-        if (status == "DISABLE") {
+    private fun visibleUIElements() {
+        quizQuestionsFragmentBinding.quizNumberQuestion.visibility = View.VISIBLE
+        quizQuestionsFragmentBinding.quizQuestion.visibility = View.VISIBLE
+        quizQuestionsFragmentBinding.quizTimer.visibility = View.VISIBLE
+        quizQuestionsFragmentBinding.quizFirstAnswer.visibility = View.VISIBLE
+        quizQuestionsFragmentBinding.quizSecondAnswer.visibility = View.VISIBLE
+        quizQuestionsFragmentBinding.quizThirdAnswer.visibility = View.VISIBLE
+        quizQuestionsFragmentBinding.quizFourAnswer.visibility = View.VISIBLE
+    }
+
+    private fun disableOrEnableOptions(status: Int) {
+        if (status == VISIBLE) {
             quizQuestionsFragmentBinding.quizFirstAnswer.isEnabled = false
             quizQuestionsFragmentBinding.quizFirstAnswer.setBackgroundResource(R.drawable.outline_grey_button_bg)
             quizQuestionsFragmentBinding.quizSecondAnswer.isEnabled = false
@@ -167,7 +167,7 @@ class QuizQuestionsFragment : DaggerFragment() {
 
 
     private fun uiUserAnswer(list: List<UserAnswer>) {
-        disableOrEnableOptions("DISABLE")
+        disableOrEnableOptions(INVISIBLE)
         countDownTimer?.cancel()
         if (list[1] == UserAnswer.CORRECT) {
             when (list[0]) {
@@ -266,7 +266,6 @@ class QuizQuestionsFragment : DaggerFragment() {
                     }
                 }
                 UserAnswer.NO_CHECKED -> {
-                    //quiz_four_answer.setBackgroundResource(R.drawable.wrong_answer_button_bg)
                     when (list[2]) {
                         UserAnswer.OPTION_A -> quizQuestionsFragmentBinding.quizFirstAnswer.setBackgroundResource(
                             R.drawable.correct_answer_button_bg
@@ -296,7 +295,7 @@ class QuizQuestionsFragment : DaggerFragment() {
         quizQuestionsFragmentBinding.progressBar.visibility = View.VISIBLE
         countDownTimer = object : CountDownTimer(seconds!!.times(1000), 10) {
             override fun onFinish() {
-                disableOrEnableOptions("DISABLE")
+                disableOrEnableOptions(INVISIBLE)
                 viewModel.onClickAnswerOption(UserAnswer.NO_CHECKED, questionQuizModelDB)
             }
 

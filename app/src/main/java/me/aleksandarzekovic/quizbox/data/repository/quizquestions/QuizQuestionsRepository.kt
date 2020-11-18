@@ -8,7 +8,6 @@ import me.aleksandarzekovic.quizbox.data.models.quizquestions.QuizQuestionsModel
 import me.aleksandarzekovic.quizbox.utils.NetManager
 import me.aleksandarzekovic.quizbox.utils.Resource
 import me.aleksandarzekovic.quizbox.utils.service.toQuizQuestions
-import timber.log.Timber
 import javax.inject.Inject
 
 class QuizQuestionsRepository @Inject constructor(
@@ -51,7 +50,6 @@ class QuizQuestionsRepository @Inject constructor(
 //    }
 
     suspend fun fetchAndUpdateQuestions(quizId: String): Resource<List<QuizQuestionsDB>> {
-        Timber.i("firestore call")
         netManager.isConnectedToInternet?.let {
             if (it) {
                 val resultList =
@@ -70,7 +68,7 @@ class QuizQuestionsRepository @Inject constructor(
 
                 return Resource.Success(questionsDB)
             }
-            return Resource.Success(localDataSource.getQuizQuestions1())
+            return Resource.Success(localDataSource.getQuizQuestions())
         }
         return Resource.Failure(Throwable("Error."))
     }
