@@ -1,14 +1,12 @@
 package me.aleksandarzekovic.quizbox.ui.quizresult
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.android.support.DaggerFragment
 import me.aleksandarzekovic.quizbox.R
@@ -33,6 +31,7 @@ class QuizResultFragment : DaggerFragment() {
     lateinit var netManager: NetManager
 
     private val args: QuizResultFragmentArgs by navArgs()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,22 +48,21 @@ class QuizResultFragment : DaggerFragment() {
         viewModel =
             ViewModelProvider(this, awareViewModelFactory).get(QuizResultViewModel::class.java)
 
-
         viewModel.saveResults(
             args.correctAnswers,
             args.totalAnswers,
             args.quizName
         )
 
-        quizResultsFragmentBinding.totalAnswers = args.totalAnswers.toString()
-        quizResultsFragmentBinding.correctAnswers = args.correctAnswers.toString()
-        Log.d("BackStack", findNavController().graph.toString())
-        quizResultsFragmentBinding.homeButton.setOnClickListener {
-            it.findNavController().navigate(R.id.action_quizResultFragment_to_quizMenuFragment)
+        quizResultsFragmentBinding.scoreResults =
+            getString(R.string.your_score_results, args.correctAnswers, args.totalAnswers)
+
+        quizResultsFragmentBinding.resultHome.setOnClickListener {
+            view?.findNavController()?.navigate(R.id.action_quizResultFragment_to_quizMenuFragment)
         }
-        quizResultsFragmentBinding.listResultButton.setOnClickListener {
-            it.findNavController()
-                .navigate(R.id.action_quizResultFragment_to_quizListResultsFragment)
+        quizResultsFragmentBinding.resultListResult.setOnClickListener {
+            view?.findNavController()
+                ?.navigate(R.id.action_quizResultFragment_to_quizListResultsFragment)
         }
     }
 }

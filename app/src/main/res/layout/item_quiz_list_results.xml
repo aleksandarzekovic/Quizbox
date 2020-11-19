@@ -5,23 +5,22 @@
     <data>
 
         <variable
-            name="model"
-            type="me.aleksandarzekovic.quizbox.data.models.quizlistresults.QuizListResultsModel" />
+            name="bestResults"
+            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/primary">
+        android:background="@color/primary_dark">
 
         <TextView
-            android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/ubuntu_r"
-            android:text="@{model.quizName + `:   ` +  model.correctAnswers + ` / ` + model.totalAnswers}"
-            android:textColor="@color/white"
+            android:text="@{bestResults}"
+            android:textColor="@color/accent"
             android:textSize="@dimen/text_size_large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

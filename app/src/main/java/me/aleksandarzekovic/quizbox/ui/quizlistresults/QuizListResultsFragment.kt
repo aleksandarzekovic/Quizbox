@@ -14,7 +14,6 @@ import me.aleksandarzekovic.quizbox.databinding.QuizListResultsFragmentBinding
 import me.aleksandarzekovic.quizbox.di.daggerawareviewmodelfactory.DaggerAwareViewModelFactory
 import me.aleksandarzekovic.quizbox.utils.NetManager
 import me.aleksandarzekovic.quizbox.utils.Resource
-import timber.log.Timber
 import javax.inject.Inject
 
 class QuizListResultsFragment : DaggerFragment() {
@@ -51,35 +50,37 @@ class QuizListResultsFragment : DaggerFragment() {
         viewModel =
             ViewModelProvider(this, awareViewModelFactory).get(QuizListResultsViewModel::class.java)
 
-        viewModel._listResults.value = listOf()
-        val a = QuizListResultsAdapter()
-        quizListResultsFragmentBinding.listResultsRecyclerView.adapter = a
+        viewModel.listResults()
+        val quizListResultsAdapter = QuizListResultsAdapter()
+        quizListResultsFragmentBinding.listResultsRecyclerView.adapter = quizListResultsAdapter
 
         viewModel.listResults.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Loading -> {
-
+                    quizListResultsFragmentBinding.listResultsProgressBar.visibility = View.VISIBLE
                 }
                 is Resource.Success -> {
-                    a.submitList(it.data)
+                    quizListResultsFragmentBinding.listResultsProgressBar.visibility =
+                        View.INVISIBLE
+                    quizListResultsAdapter.submitList(it.data)
                 }
                 is Resource.Failure -> {
+                    quizListResultsFragmentBinding.listResultsProgressBar.visibility =
+                        View.INVISIBLE
                     Snackbar.make(
                         requireView(),
-                        "${it.throwable.message} slika",
+                        "${it.throwable.message}",
                         Snackbar.LENGTH_SHORT
                     )
                         .show()
-                    Timber.i(it.throwable.message)
                 }
             }
         })
-        quizListResultsFragmentBinding.backPressed.setOnClickListener {
+        quizListResultsFragmentBinding.listResultsBackArrow.setOnClickListener {
             view?.findNavController()?.navigate(
                 R.id.action_quizListResultsFragment_to_quizMenuFragment
             )
         }
-        quizListResultsFragmentBinding.quizListResultsViewModel = viewModel
     }
 
 

@@ -1,63 +1,35 @@
 package me.aleksandarzekovic.quizbox.ui.quizlistresults
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import me.aleksandarzekovic.quizbox.data.models.quizlistresults.QuizListResultsModel
 import me.aleksandarzekovic.quizbox.data.repository.quizlistresults.QuizListResultsRepository
 import me.aleksandarzekovic.quizbox.utils.Resource
-import timber.log.Timber
 import javax.inject.Inject
 
-class QuizListResultsViewModel @Inject constructor(val quizListResultsRepository: QuizListResultsRepository) :
+class QuizListResultsViewModel @Inject constructor(private val quizListResultsRepository: QuizListResultsRepository) :
     ViewModel() {
 
-    var _listResults = MutableLiveData<List<QuizListResultsModel>>()
-    var test = MutableLiveData<Boolean>()
-    val listResults = _listResults.switchMap {
-        liveData {
-            try {
-                emit(Resource.Loading())
-                emit(quizListResultsRepository.getOfQuestionsQuizData())
-                Timber.i(quizListResultsRepository.getOfQuestionsQuizData().toString())
-            } catch (e: Exception) {
-                emit(Resource.Failure<List<QuizListResultsModel>>(e))
+    var _listResults = MutableLiveData<Resource<List<QuizListResultsModel>>>()
+    val listResults: LiveData<Resource<List<QuizListResultsModel>>>
+        get() = _listResults
+
+
+    fun listResults() {
+        viewModelScope.launch {
+            _listResults.value = Resource.Loading()
+            withContext(Dispatchers.Main) {
+                try {
+                    _listResults.value = quizListResultsRepository.getListBestResults()
+                } catch (e: Exception) {
+                    _listResults.value = Resource.Failure(Throwable(e.message))
+                }
             }
         }
     }
-//        viewModelScope.launch {
-//            withContext(Dispatchers.Main) {
-//                try {
-//                    val result = quizListResultsRepository.getOfQuestionsQuizData()
-//
-//                    when (result) {
-//                        is Resource.Success -> {
-//                            Log.d("Lits", result.data.toString())
-//                            bestScores(result.data)
-//                        }
-//                        else -> bestScores(null)
-//                    }
-//
-//                } catch (e: Exception) {
-//                    test.value = true
-//                }
-//            }
-//        }
-
-//    private fun bestScores(list: ArrayList<QuizListResultsModel>?) {
-//        val distinctQuizNames = list!!.distinctBy {
-//            it.quiz_name
-//        }
-//
-//        val arrayList = ArrayList(distinctQuizNames)
-//
-//        list.forEach { lista ->
-//
-//            arrayList.find { it!!.quiz_name == lista.quiz_name && it.correct_answers!!.toInt() < lista.correct_answers!!.toInt() }
-//                ?.correct_answers = lista.correct_answers
-//
-//        }
-//        _listResults.value = arrayList
-//    }
 }

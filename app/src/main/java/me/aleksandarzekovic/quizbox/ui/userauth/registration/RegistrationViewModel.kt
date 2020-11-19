@@ -12,7 +12,7 @@ import me.aleksandarzekovic.quizbox.data.repository.userauth.registration.Regist
 import me.aleksandarzekovic.quizbox.utils.Resource
 import javax.inject.Inject
 
-class RegistrationViewModel @Inject constructor(private var registrationRepository: RegistrationRepository) :
+class RegistrationViewModel @Inject constructor(private val registrationRepository: RegistrationRepository) :
     ViewModel() {
 
     private var _registerInfo = MutableLiveData<Resource<FirebaseUser?>>()

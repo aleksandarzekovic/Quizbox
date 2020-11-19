@@ -3,21 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="quizListResultsViewModel"
-            type="me.aleksandarzekovic.quizbox.ui.quizlistresults.QuizListResultsViewModel" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/primary"
+        android:background="@color/primary_dark"
         tools:context=".ui.quizlistresults.QuizListResultsFragment">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/list_results_applogo"
             android:layout_width="wrap_content"
             android:layout_height="250dp"
             android:contentDescription="@string/app_name"
@@ -27,7 +20,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/list_results_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -37,20 +30,20 @@
             android:textSize="@dimen/text_size_large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+            app:layout_constraintTop_toBottomOf="@+id/list_results_applogo" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/listResultsRecyclerView"
+            android:id="@+id/list_results_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_size_medium"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView5" />
+            app:layout_constraintTop_toBottomOf="@+id/list_results_header" />
 
         <ImageView
-            android:id="@+id/back_pressed"
+            android:id="@+id/list_results_back_arrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -58,17 +51,18 @@
             android:contentDescription="@string/alt_photo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_baseline_arrow_back_ios_24_primary_color" />
+            app:srcCompat="@drawable/ic_baseline_keyboard_arrow_left_24" />
 
         <ProgressBar
-            android:id="@+id/quiz_menu_progress_bar"
+            android:id="@+id/list_results_progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminateTint="@color/accent"
-            android:visibility="invisible"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView5" />
+            app:layout_constraintTop_toBottomOf="@+id/list_results_header" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

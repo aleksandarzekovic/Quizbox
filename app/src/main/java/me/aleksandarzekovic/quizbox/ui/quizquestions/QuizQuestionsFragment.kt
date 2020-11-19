@@ -86,17 +86,17 @@ class QuizQuestionsFragment : DaggerFragment() {
             if (it != null) {
                 when (it) {
                     is Resource.Loading -> {
-                        quizQuestionsFragmentBinding.preProgressBar.visibility = View.VISIBLE
+                        quizQuestionsFragmentBinding.quizLoadProgressBar.visibility = View.VISIBLE
                     }
                     is Resource.Success -> {
-                        quizQuestionsFragmentBinding.preProgressBar.visibility = View.INVISIBLE
+                        quizQuestionsFragmentBinding.quizLoadProgressBar.visibility = View.INVISIBLE
                         visibleUIElements()
                         totalAnswer = it.data.size
                         viewModel.setQuizQuestions(it.data)
                     }
 
                     is Resource.Failure -> {
-                        quizQuestionsFragmentBinding.preProgressBar.visibility = View.INVISIBLE
+                        quizQuestionsFragmentBinding.quizLoadProgressBar.visibility = View.INVISIBLE
                         Snackbar.make(
                             this.requireView(),
                             "${it.throwable.message}",
@@ -111,6 +111,11 @@ class QuizQuestionsFragment : DaggerFragment() {
         viewModel.answer.observe(viewLifecycleOwner, {
             uiUserAnswer(it)
         })
+
+        quizQuestionsFragmentBinding.quizBackArrow.setOnClickListener {
+            view?.findNavController()
+                ?.navigate(R.id.action_quizQuestionsFragment_to_quizMenuFragment)
+        }
     }
 
     private fun setView(listQuestions: List<QuizQuestionsDB>) {
@@ -131,7 +136,7 @@ class QuizQuestionsFragment : DaggerFragment() {
         quizQuestionsFragmentBinding.quizFirstAnswer.setBackgroundResource(R.drawable.outline_button_bg)
         quizQuestionsFragmentBinding.quizSecondAnswer.setBackgroundResource(R.drawable.outline_button_bg)
         quizQuestionsFragmentBinding.quizThirdAnswer.setBackgroundResource(R.drawable.outline_button_bg)
-        quizQuestionsFragmentBinding.quizFourAnswer.setBackgroundResource(R.drawable.outline_button_bg)
+        quizQuestionsFragmentBinding.quizFourthAnswer.setBackgroundResource(R.drawable.outline_button_bg)
     }
 
     private fun visibleUIElements() {
@@ -141,25 +146,25 @@ class QuizQuestionsFragment : DaggerFragment() {
         quizQuestionsFragmentBinding.quizFirstAnswer.visibility = View.VISIBLE
         quizQuestionsFragmentBinding.quizSecondAnswer.visibility = View.VISIBLE
         quizQuestionsFragmentBinding.quizThirdAnswer.visibility = View.VISIBLE
-        quizQuestionsFragmentBinding.quizFourAnswer.visibility = View.VISIBLE
+        quizQuestionsFragmentBinding.quizFourthAnswer.visibility = View.VISIBLE
     }
 
     private fun disableOrEnableOptions(status: Int) {
-        if (status == VISIBLE) {
+        if (status == INVISIBLE) {
             quizQuestionsFragmentBinding.quizFirstAnswer.isEnabled = false
             quizQuestionsFragmentBinding.quizFirstAnswer.setBackgroundResource(R.drawable.outline_grey_button_bg)
             quizQuestionsFragmentBinding.quizSecondAnswer.isEnabled = false
             quizQuestionsFragmentBinding.quizSecondAnswer.setBackgroundResource(R.drawable.outline_grey_button_bg)
             quizQuestionsFragmentBinding.quizThirdAnswer.isEnabled = false
             quizQuestionsFragmentBinding.quizThirdAnswer.setBackgroundResource(R.drawable.outline_grey_button_bg)
-            quizQuestionsFragmentBinding.quizFourAnswer.isEnabled = false
-            quizQuestionsFragmentBinding.quizFourAnswer.setBackgroundResource(R.drawable.outline_grey_button_bg)
+            quizQuestionsFragmentBinding.quizFourthAnswer.isEnabled = false
+            quizQuestionsFragmentBinding.quizFourthAnswer.setBackgroundResource(R.drawable.outline_grey_button_bg)
             quizQuestionsFragmentBinding.quizNextQuestion.visibility = View.VISIBLE
         } else {
             quizQuestionsFragmentBinding.quizFirstAnswer.isEnabled = true
             quizQuestionsFragmentBinding.quizSecondAnswer.isEnabled = true
             quizQuestionsFragmentBinding.quizThirdAnswer.isEnabled = true
-            quizQuestionsFragmentBinding.quizFourAnswer.isEnabled = true
+            quizQuestionsFragmentBinding.quizFourthAnswer.isEnabled = true
             quizQuestionsFragmentBinding.quizNextQuestion.visibility = View.INVISIBLE
         }
 
@@ -180,10 +185,11 @@ class QuizQuestionsFragment : DaggerFragment() {
                 UserAnswer.OPTION_C -> quizQuestionsFragmentBinding.quizThirdAnswer.setBackgroundResource(
                     R.drawable.correct_answer_button_bg
                 )
-                UserAnswer.OPTION_D -> quizQuestionsFragmentBinding.quizFourAnswer.setBackgroundResource(
+                UserAnswer.OPTION_D -> quizQuestionsFragmentBinding.quizFourthAnswer.setBackgroundResource(
                     R.drawable.correct_answer_button_bg
                 )
                 else -> {
+                    snackBarError()
                 }
             }
             sumCorrectAnswers++
@@ -201,10 +207,11 @@ class QuizQuestionsFragment : DaggerFragment() {
                         UserAnswer.OPTION_C -> quizQuestionsFragmentBinding.quizThirdAnswer.setBackgroundResource(
                             R.drawable.correct_answer_button_bg
                         )
-                        UserAnswer.OPTION_D -> quizQuestionsFragmentBinding.quizFourAnswer.setBackgroundResource(
+                        UserAnswer.OPTION_D -> quizQuestionsFragmentBinding.quizFourthAnswer.setBackgroundResource(
                             R.drawable.correct_answer_button_bg
                         )
                         else -> {
+                            snackBarError()
                         }
                     }
                 }
@@ -220,10 +227,11 @@ class QuizQuestionsFragment : DaggerFragment() {
                         UserAnswer.OPTION_C -> quizQuestionsFragmentBinding.quizThirdAnswer.setBackgroundResource(
                             R.drawable.correct_answer_button_bg
                         )
-                        UserAnswer.OPTION_D -> quizQuestionsFragmentBinding.quizFourAnswer.setBackgroundResource(
+                        UserAnswer.OPTION_D -> quizQuestionsFragmentBinding.quizFourthAnswer.setBackgroundResource(
                             R.drawable.correct_answer_button_bg
                         )
                         else -> {
+                            snackBarError()
                         }
                     }
                 }
@@ -239,15 +247,16 @@ class QuizQuestionsFragment : DaggerFragment() {
                         UserAnswer.OPTION_C -> quizQuestionsFragmentBinding.quizThirdAnswer.setBackgroundResource(
                             R.drawable.correct_answer_button_bg
                         )
-                        UserAnswer.OPTION_D -> quizQuestionsFragmentBinding.quizFourAnswer.setBackgroundResource(
+                        UserAnswer.OPTION_D -> quizQuestionsFragmentBinding.quizFourthAnswer.setBackgroundResource(
                             R.drawable.correct_answer_button_bg
                         )
                         else -> {
+                            snackBarError()
                         }
                     }
                 }
                 UserAnswer.OPTION_D -> {
-                    quizQuestionsFragmentBinding.quizFourAnswer.setBackgroundResource(R.drawable.wrong_answer_button_bg)
+                    quizQuestionsFragmentBinding.quizFourthAnswer.setBackgroundResource(R.drawable.wrong_answer_button_bg)
                     when (list[2]) {
                         UserAnswer.OPTION_A -> quizQuestionsFragmentBinding.quizFirstAnswer.setBackgroundResource(
                             R.drawable.correct_answer_button_bg
@@ -258,10 +267,11 @@ class QuizQuestionsFragment : DaggerFragment() {
                         UserAnswer.OPTION_C -> quizQuestionsFragmentBinding.quizThirdAnswer.setBackgroundResource(
                             R.drawable.correct_answer_button_bg
                         )
-                        UserAnswer.OPTION_D -> quizQuestionsFragmentBinding.quizFourAnswer.setBackgroundResource(
+                        UserAnswer.OPTION_D -> quizQuestionsFragmentBinding.quizFourthAnswer.setBackgroundResource(
                             R.drawable.correct_answer_button_bg
                         )
                         else -> {
+                            snackBarError()
                         }
                     }
                 }
@@ -276,23 +286,33 @@ class QuizQuestionsFragment : DaggerFragment() {
                         UserAnswer.OPTION_C -> quizQuestionsFragmentBinding.quizThirdAnswer.setBackgroundResource(
                             R.drawable.correct_answer_button_bg
                         )
-                        UserAnswer.OPTION_D -> quizQuestionsFragmentBinding.quizFourAnswer.setBackgroundResource(
+                        UserAnswer.OPTION_D -> quizQuestionsFragmentBinding.quizFourthAnswer.setBackgroundResource(
                             R.drawable.correct_answer_button_bg
                         )
                         else -> {
+                            snackBarError()
                         }
                     }
                 }
                 else -> {
+                    snackBarError()
                 }
             }
         }
     }
 
+    private fun snackBarError() {
+        Snackbar.make(
+            this.requireView(),
+            "Error.",
+            Snackbar.LENGTH_SHORT
+        )
+            .show()
+    }
 
     private fun startTimer(seconds: Long?) {
         quizQuestionsFragmentBinding.quizTimer.text = seconds.toString()
-        quizQuestionsFragmentBinding.progressBar.visibility = View.VISIBLE
+        quizQuestionsFragmentBinding.quizTimerProgressBar.visibility = View.VISIBLE
         countDownTimer = object : CountDownTimer(seconds!!.times(1000), 10) {
             override fun onFinish() {
                 disableOrEnableOptions(INVISIBLE)
@@ -302,7 +322,7 @@ class QuizQuestionsFragment : DaggerFragment() {
             override fun onTick(p0: Long) {
                 quizQuestionsFragmentBinding.quizTimer.text = (p0 / 1000).toString()
                 val percent = (p0) / seconds!!.times(10)
-                quizQuestionsFragmentBinding.progressBar.progress = percent.toInt()
+                quizQuestionsFragmentBinding.quizTimerProgressBar.progress = percent.toInt()
 
             }
         }

@@ -6,11 +6,7 @@
     <data>
 
         <variable
-            name="correctAnswers"
-            type="String" />
-
-        <variable
-            name="totalAnswers"
+            name="scoreResults"
             type="String" />
     </data>
 
@@ -21,7 +17,7 @@
         tools:context=".ui.quizresult.QuizResultFragment">
 
         <ImageView
-            android:id="@+id/resultsLogo"
+            android:id="@+id/result_applogo"
             android:layout_width="wrap_content"
             android:layout_height="250dp"
             android:layout_marginTop="10dp"
@@ -32,7 +28,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/result_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
@@ -41,22 +37,22 @@
             android:textSize="30sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/resultsLogo" />
+            app:layout_constraintTop_toBottomOf="@+id/result_applogo" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/result_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@{correctAnswers + ` / ` +  totalAnswers}"
+            android:text="@{scoreResults}"
             android:textColor="@color/accent"
             android:textSize="36sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
+            app:layout_constraintTop_toBottomOf="@+id/result_header" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/list_result_button"
+            android:id="@+id/result_list_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
@@ -66,13 +62,13 @@
             app:elevation="0dp"
             app:fabSize="normal"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/home_button"
+            app:layout_constraintEnd_toStartOf="@id/result_home"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2"
+            app:layout_constraintTop_toBottomOf="@+id/result_score"
             app:srcCompat="@drawable/ic_baseline_format_list_numbered_24" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/home_button"
+            android:id="@+id/result_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
@@ -84,8 +80,8 @@
             app:fabSize="normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/list_result_button"
-            app:layout_constraintTop_toBottomOf="@+id/textView2"
+            app:layout_constraintStart_toEndOf="@+id/result_list_result"
+            app:layout_constraintTop_toBottomOf="@+id/result_score"
             app:srcCompat="@drawable/ic_baseline_home_45" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

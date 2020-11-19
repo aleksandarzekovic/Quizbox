@@ -8,14 +8,14 @@ import me.aleksandarzekovic.quizbox.data.database.quizmenu.QuizTypeDBDao
 import me.aleksandarzekovic.quizbox.data.models.quizmenu.QuizTypeModel
 import me.aleksandarzekovic.quizbox.utils.NetManager
 import me.aleksandarzekovic.quizbox.utils.Resource
-import me.aleksandarzekovic.quizbox.utils.service.toQuizType
+import me.aleksandarzekovic.quizbox.utils.toQuizType
 import javax.inject.Inject
 
 class QuizMenuRepository @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val localDataSource: QuizTypeDBDao,
     private val fireStore: FirebaseFirestore,
-    private var netManager: NetManager
+    private val netManager: NetManager
 ) {
 
     suspend fun fetchAndUpdate(): Resource<List<QuizTypeDB>> {

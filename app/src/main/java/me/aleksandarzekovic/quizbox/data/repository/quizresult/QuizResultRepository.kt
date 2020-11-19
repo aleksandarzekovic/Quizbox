@@ -9,25 +9,20 @@ import me.aleksandarzekovic.quizbox.utils.NetManager
 import javax.inject.Inject
 
 class QuizResultRepository @Inject constructor(
-    private var fireStore: FirebaseFirestore,
-    private var firebaseAuth: FirebaseAuth,
+    private val fireStore: FirebaseFirestore,
+    private val firebaseAuth: FirebaseAuth,
     private val dataSource: QuizResultDBDao,
-    var netManager: NetManager
+    private val netManager: NetManager
 ) {
-
-    suspend fun getResults(): List<QuizResultDB> {
-        return dataSource.getQuizResults()
-    }
-
 
     suspend fun saveResult(quizResult: QuizResultDB) {
         dataSource.insert(quizResult)
 
         netManager.isConnectedToInternet?.let {
             if (it) {
-                val listQuizResult = getResults().map {
-                    it.sendRemote = true
-                    it
+                val listQuizResult = dataSource.getQuizResults().map { result ->
+                    result.sendRemote = true
+                    result
                 }
                 for (quiz in listQuizResult) {
                     fireStore.collection("Results")
