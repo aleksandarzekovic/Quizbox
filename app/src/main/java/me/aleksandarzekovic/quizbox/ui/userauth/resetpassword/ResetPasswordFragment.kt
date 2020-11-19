@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
 import me.aleksandarzekovic.quizbox.R
@@ -57,11 +57,12 @@ class ResetPasswordFragment : DaggerFragment() {
                 }
                 is Resource.Success -> {
                     resetPasswordFragmentBinding.resetPwProgressBar.visibility = View.INVISIBLE
-                    resetPasswordFragmentBinding.inputResetMail.visibility = View.INVISIBLE
+                    resetPasswordFragmentBinding.resetMail.visibility = View.INVISIBLE
                     resetPasswordFragmentBinding.respMessage =
-                        "A password reset has been sent to your mail. Please check."
-                    resetPasswordFragmentBinding.buttonSendMail.visibility = View.INVISIBLE
-                    resetPasswordFragmentBinding.buttonReturnToLogin.visibility = View.VISIBLE
+                        getString(R.string.reset_pass_message)
+
+                    resetPasswordFragmentBinding.resetSendMail.visibility = View.INVISIBLE
+                    resetPasswordFragmentBinding.resetReturnToLogin.visibility = View.VISIBLE
                 }
 
                 is Resource.Failure -> {
@@ -77,8 +78,8 @@ class ResetPasswordFragment : DaggerFragment() {
 
         })
 
-        resetPasswordFragmentBinding.buttonReturnToLogin.setOnClickListener {
-            findNavController().navigate(R.id.action_resetPasswordFragment_to_loginFragment)
+        resetPasswordFragmentBinding.resetReturnArrow.setOnClickListener {
+            view?.findNavController()?.navigate(R.id.action_resetPasswordFragment_to_loginFragment)
         }
     }
 }

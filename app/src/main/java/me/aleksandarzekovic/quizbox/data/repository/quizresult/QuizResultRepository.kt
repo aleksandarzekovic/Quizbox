@@ -36,20 +36,4 @@ class QuizResultRepository @Inject constructor(
             }
         }
     }
-
-    suspend fun saveResultsRemote(quizResult: List<QuizResultDB>) {
-        netManager.isConnectedToInternet?.let {
-            if (it) {
-                for (quiz in quizResult) {
-                    fireStore.collection("Results")
-                        .document("${firebaseAuth.currentUser?.email}")
-                        .collection("Statistic")
-                        .document("${quiz.documentId}")
-                        .set(quizResult)
-                        .await()
-                    saveResult(quiz)
-                }
-            }
-        }
-    }
 }

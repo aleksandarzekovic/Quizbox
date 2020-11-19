@@ -210,7 +210,7 @@
             android:src="@drawable/ic_baseline_arrow_forward_ios_24"
             android:visibility="gone"
             app:backgroundTint="@color/primary"
-            app:elevation="3dp"
+            app:elevation="@dimen/elevation_card"
             app:fabSize="normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

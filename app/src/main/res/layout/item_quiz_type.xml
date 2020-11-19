@@ -22,11 +22,11 @@
         android:layout_marginBottom="@dimen/margin_size_medium"
         android:background="@color/primary"
         android:clickable="true"
-        android:elevation="8dp"
+        android:elevation="@dimen/elevation_card"
         android:focusable="true"
         android:foregroundGravity="center"
         android:onClick="@{() -> listener.onItemClick(model)}"
-        android:padding="4dp">
+        android:padding="@dimen/padding_size_x_small">
 
 
         <TextView

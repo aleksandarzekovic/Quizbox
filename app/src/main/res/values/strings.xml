@@ -22,4 +22,5 @@
     <string name="logout">Logout</string>
     <string name="your_score_results">%1$d / %2$d</string>
     <string name="best_score_results">%1$s: %2$d / %3$d</string>
+    <string name="reset_pass_message">A password reset has been sent to your mail. Please check.</string>
 </resources>

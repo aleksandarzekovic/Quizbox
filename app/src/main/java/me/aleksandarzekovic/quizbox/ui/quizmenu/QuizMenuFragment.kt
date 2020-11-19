@@ -15,7 +15,6 @@ import me.aleksandarzekovic.quizbox.databinding.QuizMenuFragmentBinding
 import me.aleksandarzekovic.quizbox.di.daggerawareviewmodelfactory.DaggerAwareViewModelFactory
 import me.aleksandarzekovic.quizbox.utils.NetManager
 import me.aleksandarzekovic.quizbox.utils.Resource
-import timber.log.Timber
 import javax.inject.Inject
 
 class QuizMenuFragment : DaggerFragment(), QuizMenuAdapter.QuizMenuClickListener {
@@ -84,7 +83,6 @@ class QuizMenuFragment : DaggerFragment(), QuizMenuAdapter.QuizMenuClickListener
 
 
     private fun initToolbars() {
-        Timber.i("test1")
         setHasOptionsMenu(true)
         bindingQuizMenuFragmentBinding.quizMenuToolbar.setOnMenuItemClickListener { item ->
             when (item!!.itemId) {

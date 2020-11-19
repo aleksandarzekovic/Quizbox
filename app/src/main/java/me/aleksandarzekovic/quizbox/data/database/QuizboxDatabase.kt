@@ -13,7 +13,7 @@ import me.aleksandarzekovic.quizbox.data.database.quizquestion.QuizQuestionsDao
 
 @Database(
     entities = [QuizQuestionsDB::class, QuizTypeDB::class, QuizResultDB::class],
-    version = 2,
+    version = 1,
     exportSchema = false
 )
 abstract class QuizboxDatabase : RoomDatabase() {

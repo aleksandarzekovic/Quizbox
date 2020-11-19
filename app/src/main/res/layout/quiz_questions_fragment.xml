@@ -66,8 +66,8 @@
             android:background="@color/divider"
             android:orientation="vertical"
             android:visibility="invisible"
-            android:padding="4dp"
-            app:cardElevation="8dp"
+            android:padding="@dimen/padding_size_x_small"
+            app:cardElevation="@dimen/elevation_card"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/quiz_number_question">
@@ -82,16 +82,16 @@
                 android:paddingBottom="@dimen/margin_size_medium"
                 android:text="@{question.question}"
                 android:textColor="@color/primary_text"
-                android:textSize="20sp" />
+                android:textSize="@dimen/text_size_small_medium" />
 
         </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/quiz_timer"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="@dimen/timer_height"
             android:text="@string/zero"
-            android:textSize="35sp"
+            android:textSize="@dimen/timer_size"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/quiz_timer_progress_bar"
             app:layout_constraintEnd_toEndOf="@+id/quiz_timer_progress_bar"
@@ -101,9 +101,9 @@
         <android.widget.Button
             android:id="@+id/quiz_first_answer"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="@dimen/button_height"
             android:layout_marginLeft="@dimen/margin_size_small"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="@dimen/padding_size_large"
             android:layout_marginRight="@dimen/margin_size_small"
             android:visibility="invisible"
             android:background="@drawable/outline_button_bg"
@@ -117,7 +117,7 @@
         <android.widget.Button
             android:id="@+id/quiz_second_answer"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="@dimen/button_height"
             android:layout_margin="@dimen/margin_size_small"
             android:visibility="invisible"
             android:background="@drawable/outline_button_bg"
@@ -130,7 +130,7 @@
         <android.widget.Button
             android:id="@+id/quiz_third_answer"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="@dimen/button_height"
             android:layout_margin="@dimen/margin_size_small"
             android:visibility="invisible"
             android:background="@drawable/outline_button_bg"
@@ -143,7 +143,7 @@
         <android.widget.Button
             android:id="@+id/quiz_fourth_answer"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="@dimen/button_height"
             android:layout_margin="@dimen/margin_size_small"
             android:visibility="invisible"
             android:background="@drawable/outline_button_bg"
@@ -170,9 +170,9 @@
         <ProgressBar
             android:id="@+id/quiz_timer_progress_bar"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_marginTop="20dp"
+            android:layout_width="@dimen/timer_dimension"
+            android:layout_height="@dimen/timer_dimension"
+            android:layout_marginTop="@dimen/margin_size_medium"
             android:indeterminate="false"
             android:indeterminateTint="@color/red"
             android:progressDrawable="@drawable/progress_bar"
@@ -185,9 +185,9 @@
 
         <ProgressBar
             android:id="@+id/quiz_load_progress_bar"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_marginTop="20dp"
+            android:layout_width="@dimen/timer_dimension"
+            android:layout_height="@dimen/timer_dimension"
+            android:layout_marginTop="@dimen/margin_size_medium"
             android:indeterminate="false"
             android:indeterminateTint="@color/accent"
             android:visibility="visible"
