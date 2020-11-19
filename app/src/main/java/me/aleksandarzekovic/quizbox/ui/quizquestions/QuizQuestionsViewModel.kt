@@ -46,7 +46,8 @@ class QuizQuestionsViewModel @Inject constructor(private val quizQuestionsReposi
 
     fun onClickNext(model: QuizQuestionsDB) {
         if (_remainingQuestions.value != null) {
-            _remainingQuestions.value = (_remainingQuestions.value as List<QuizQuestionsDB>).drop(1)
+            _remainingQuestions.value =
+                (_remainingQuestions.value as List<QuizQuestionsDB>).minus(model)
         }
     }
 

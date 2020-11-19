@@ -11,7 +11,7 @@
 
         <variable
             name="quizMenuListener"
-            type="me.aleksandarzekovic.quizbox.utils.recyclerview.EventListener" />
+            type="me.aleksandarzekovic.quizbox.ui.quizmenu.QuizMenuAdapter.QuizMenuClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
