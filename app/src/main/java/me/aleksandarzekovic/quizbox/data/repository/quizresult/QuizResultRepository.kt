@@ -5,6 +5,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import me.aleksandarzekovic.quizbox.data.database.quiz_result.QuizResultDB
 import me.aleksandarzekovic.quizbox.data.database.quiz_result.QuizResultDBDao
+import me.aleksandarzekovic.quizbox.utils.Constants.RESULTS
+import me.aleksandarzekovic.quizbox.utils.Constants.STATISTIC
 import me.aleksandarzekovic.quizbox.utils.NetManager
 import javax.inject.Inject
 
@@ -25,9 +27,9 @@ class QuizResultRepository @Inject constructor(
                     result
                 }
                 for (quiz in listQuizResult) {
-                    fireStore.collection("Results")
+                    fireStore.collection(RESULTS)
                         .document("${firebaseAuth.currentUser?.email}")
-                        .collection("Statistic")
+                        .collection(STATISTIC)
                         .document("${quiz.documentId}")
                         .set(quiz)
                         .await()

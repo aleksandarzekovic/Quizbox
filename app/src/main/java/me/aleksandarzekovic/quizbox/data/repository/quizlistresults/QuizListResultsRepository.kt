@@ -6,6 +6,9 @@ import kotlinx.coroutines.tasks.await
 import me.aleksandarzekovic.quizbox.data.database.quiz_result.QuizResultDB
 import me.aleksandarzekovic.quizbox.data.database.quiz_result.QuizResultDBDao
 import me.aleksandarzekovic.quizbox.data.models.quizlistresults.QuizListResultsModel
+import me.aleksandarzekovic.quizbox.utils.Constants.ERROR
+import me.aleksandarzekovic.quizbox.utils.Constants.RESULTS
+import me.aleksandarzekovic.quizbox.utils.Constants.STATISTIC
 import me.aleksandarzekovic.quizbox.utils.NetManager
 import me.aleksandarzekovic.quizbox.utils.Resource
 import me.aleksandarzekovic.quizbox.utils.toQuizResultDB
@@ -22,8 +25,8 @@ class QuizListResultsRepository @Inject constructor(
         netManager.isConnectedToInternet?.let {
             if (it) {
                 val result =
-                    fireStore.collection("Results").document("${firebaseAuth.currentUser!!.email}")
-                        .collection("Statistic").get().await()
+                    fireStore.collection(RESULTS).document("${firebaseAuth.currentUser!!.email}")
+                        .collection(STATISTIC).get().await()
                 val list = result.toObjects(QuizListResultsModel::class.java)
 
 
@@ -37,7 +40,7 @@ class QuizListResultsRepository @Inject constructor(
             }
             return Resource.Success(filterBestScores(dataSource.getQuizResults()))
         }
-        return Resource.Failure(Throwable("Error."))
+        return Resource.Failure(Throwable(ERROR))
     }
 
     private fun filterBestScores(list: List<QuizResultDB>?): List<QuizResultDB> {

@@ -3,6 +3,10 @@
 Which this project, I have covered some areas brought by [Android Jetpack](https://developer.android.com/jetpack). 
 Primarily, I wanted to include in addition to Firebase and the Room storage library, although we know that Firebase allows enabling [offline capabilities on android](https://firebase.google.com/docs/database/android/offline-capabilities). I wanted to improvise a little. 🚀
 
+The application works on the principle of taking quiz types / results from Firebase and then loading them locally. If there is no internet access, the application takes the data locally.
+<br />
+In the application, I plan to add that the results are updated when the user reinstalls the application and logs in with the existing account.
+Of course, I also plan to add unit tests. I know, unit tests were supposed to go first, but it doesn’t matter now. :sweat_smile: :joy:
 
 <br />
 

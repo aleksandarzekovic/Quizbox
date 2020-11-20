@@ -6,6 +6,8 @@ import kotlinx.coroutines.tasks.await
 import me.aleksandarzekovic.quizbox.data.database.quizmenu.QuizTypeDB
 import me.aleksandarzekovic.quizbox.data.database.quizmenu.QuizTypeDBDao
 import me.aleksandarzekovic.quizbox.data.models.quizmenu.QuizTypeModel
+import me.aleksandarzekovic.quizbox.utils.Constants.ERROR
+import me.aleksandarzekovic.quizbox.utils.Constants.QUIZTYPE
 import me.aleksandarzekovic.quizbox.utils.NetManager
 import me.aleksandarzekovic.quizbox.utils.Resource
 import me.aleksandarzekovic.quizbox.utils.toQuizType
@@ -22,7 +24,7 @@ class QuizMenuRepository @Inject constructor(
         try {
             netManager.isConnectedToInternet?.let { it ->
                 if (it) {
-                    val resultList = fireStore.collection("QuizType").get().await()
+                    val resultList = fireStore.collection(QUIZTYPE).get().await()
                     val eventList = resultList.toObjects(QuizTypeModel::class.java)
                     val eventListQuizTypeDB = eventList.map { list ->
                         list.toQuizType()
@@ -34,10 +36,10 @@ class QuizMenuRepository @Inject constructor(
                 }
                 return Resource.Success(localDataSource.getQuizTypes())
             }
-            return Resource.Failure(Throwable("Error."))
+            return Resource.Failure(Throwable(ERROR))
 
         } catch (e: Exception) {
-            return Resource.Failure(Throwable("Error."))
+            return Resource.Failure(Throwable(ERROR))
         }
     }
 
