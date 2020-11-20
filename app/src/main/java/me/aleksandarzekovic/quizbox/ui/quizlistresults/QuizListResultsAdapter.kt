@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import me.aleksandarzekovic.quizbox.R
-import me.aleksandarzekovic.quizbox.data.models.quizlistresults.QuizListResultsModel
+import me.aleksandarzekovic.quizbox.data.database.quiz_result.QuizResultDB
 import me.aleksandarzekovic.quizbox.databinding.ItemQuizListResultsBinding
 
 class QuizListResultsAdapter :
-    ListAdapter<QuizListResultsModel, QuizListResultsAdapter.ViewHolder>(QuizListResultsDiffCallback()) {
+    ListAdapter<QuizResultDB, QuizListResultsAdapter.ViewHolder>(QuizListResultsDiffCallback()) {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         val itemFormatted = holder.itemView.context.getString(
@@ -38,18 +38,18 @@ class QuizListResultsAdapter :
     }
 }
 
-class QuizListResultsDiffCallback : DiffUtil.ItemCallback<QuizListResultsModel>() {
+class QuizListResultsDiffCallback : DiffUtil.ItemCallback<QuizResultDB>() {
 
     override fun areItemsTheSame(
-        oldItem: QuizListResultsModel,
-        newItem: QuizListResultsModel
+        oldItem: QuizResultDB,
+        newItem: QuizResultDB
     ): Boolean {
         return oldItem.documentId == newItem.documentId
     }
 
     override fun areContentsTheSame(
-        oldItem: QuizListResultsModel,
-        newItem: QuizListResultsModel
+        oldItem: QuizResultDB,
+        newItem: QuizResultDB
     ): Boolean {
         return oldItem == newItem
     }

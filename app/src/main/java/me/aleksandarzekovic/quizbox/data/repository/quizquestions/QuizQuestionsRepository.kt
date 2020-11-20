@@ -18,25 +18,29 @@ class QuizQuestionsRepository @Inject constructor(
 ) {
 
     suspend fun fetchAndUpdateQuestions(quizId: String): Resource<List<QuizQuestionsDB>> {
-        netManager.isConnectedToInternet?.let {
-            if (it) {
-                val resultList =
-                    fireStore.collection("QuizType").document(quizId)
-                        .collection("Questions").get()
-                        .await()
+        try {
+            netManager.isConnectedToInternet?.let {
+                if (it) {
+                    val resultList =
+                        fireStore.collection("QuizType").document(quizId)
+                            .collection("Questions").get()
+                            .await()
 
-                val questions: List<QuizQuestionsModel> =
-                    resultList.toObjects(QuizQuestionsModel::class.java)
+                    val questions: List<QuizQuestionsModel> =
+                        resultList.toObjects(QuizQuestionsModel::class.java)
 
-                val questionsDB = questions.map { res ->
-                    res.toQuizQuestions()
+                    val questionsDB = questions.map { res ->
+                        res.toQuizQuestions()
+                    }
+
+                    localDataSource.insertAll(questionsDB)
+
+                    return Resource.Success(questionsDB.populateQuiz(10))
                 }
-
-                localDataSource.insertAll(questionsDB)
-
-                return Resource.Success(questionsDB.populateQuiz(10))
+                return Resource.Success(localDataSource.getQuizQuestions().populateQuiz(10))
             }
-            return Resource.Success(localDataSource.getQuizQuestions().populateQuiz(10))
+        } catch (e: Exception) {
+            return Resource.Failure(Throwable("Error."))
         }
         return Resource.Failure(Throwable("Error."))
     }

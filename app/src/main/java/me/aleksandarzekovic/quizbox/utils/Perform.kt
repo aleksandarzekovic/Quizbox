@@ -1,7 +1,9 @@
 package me.aleksandarzekovic.quizbox.utils
 
+import me.aleksandarzekovic.quizbox.data.database.quiz_result.QuizResultDB
 import me.aleksandarzekovic.quizbox.data.database.quizmenu.QuizTypeDB
 import me.aleksandarzekovic.quizbox.data.database.quizquestion.QuizQuestionsDB
+import me.aleksandarzekovic.quizbox.data.models.quizlistresults.QuizListResultsModel
 import me.aleksandarzekovic.quizbox.data.models.quizmenu.QuizTypeModel
 import me.aleksandarzekovic.quizbox.data.models.quizquestions.QuizQuestionsModel
 
@@ -32,5 +34,14 @@ fun QuizTypeModel.toQuizType() = QuizTypeDB(
     desc = "$desc",
     visibility = visibility
 )
+
+fun QuizListResultsModel.toQuizResultDB() = QuizResultDB(
+    documentId = documentId!!,
+    quizName = "$quizName",
+    correctAnswers = correctAnswers,
+    totalAnswers = totalAnswers,
+    sendRemote = sendRemote
+)
+
 
 //fun logCoroutineInfo(msg: String) = Timber.i("Running on: [${Thread.currentThread().name}] | $msg")

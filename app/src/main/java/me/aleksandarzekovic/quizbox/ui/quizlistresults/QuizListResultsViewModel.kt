@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.aleksandarzekovic.quizbox.data.models.quizlistresults.QuizListResultsModel
+import me.aleksandarzekovic.quizbox.data.database.quiz_result.QuizResultDB
 import me.aleksandarzekovic.quizbox.data.repository.quizlistresults.QuizListResultsRepository
 import me.aleksandarzekovic.quizbox.utils.Resource
 import javax.inject.Inject
@@ -15,8 +15,8 @@ import javax.inject.Inject
 class QuizListResultsViewModel @Inject constructor(private val quizListResultsRepository: QuizListResultsRepository) :
     ViewModel() {
 
-    var _listResults = MutableLiveData<Resource<List<QuizListResultsModel>>>()
-    val listResults: LiveData<Resource<List<QuizListResultsModel>>>
+    var _listResults = MutableLiveData<Resource<List<QuizResultDB>>>()
+    val listResults: LiveData<Resource<List<QuizResultDB>>>
         get() = _listResults
 
 

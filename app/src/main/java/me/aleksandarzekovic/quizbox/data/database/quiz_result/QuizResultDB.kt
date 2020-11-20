@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "quiz_results")
-class QuizResultDB(
+data class QuizResultDB(
     @PrimaryKey
     @ColumnInfo(name = "document_id")
     var documentId: Long,
@@ -14,11 +14,11 @@ class QuizResultDB(
     val quizName: String?,
 
     @ColumnInfo(name = "correct_answers")
-    val correctAnswers: Int,
+    var correctAnswers: Int?,
 
     @ColumnInfo(name = "total_answers")
-    val totalAnswers: Int,
+    val totalAnswers: Int?,
 
     @ColumnInfo(name = "send_remote")
-    var sendRemote: Boolean
+    var sendRemote: Boolean?
 )
